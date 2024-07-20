@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 import numpy as np
 from scipy.stats import gaussian_kde
 from flask import jsonify
-from helpers import get_json, get_basic_pitches_df, get_ball_tracking_df
+from helpers import get_json, get_basic_pitches_df, get_ball_tracking_df, filter_by_args
 
 
 # Access the parsed dataframes
@@ -36,8 +36,13 @@ def first_occurence_closest_to_zero(group):
     return closest_row
 
 # pass in args 
-def plot_pitch_result_heatmap(result):
-    filtered_pitches = basic_pitches[basic_pitches['result'] == result]
+def plot_pitch_result_heatmap(args):
+    filtered_pitches = filter_by_args(args, basic_pitches)
+    if filtered_pitches.empty:
+        return {}
+
+    print(filtered_pitches)
+    # filtered_pitches = basic_pitches[basic_pitches['result'] == result]
 
     # Merge the DataFrames on pitcheventId and eventId
     merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')
@@ -58,16 +63,17 @@ def plot_pitch_result_heatmap(result):
     kernel = gaussian_kde(values)
     f = np.reshape(kernel(positions).T, xx.shape)
 
-    heatmap = {
+    heatmap = [{
+        "type": 'heatmap',
         "x": x_range.tolist(), 
         "y": z_range.tolist(), 
         "z": f.tolist(), 
         "colorscale": 'YlOrRd',
         "colorbar": dict(title='Density')
-    }
+    }]
 
     layout = {
-        "title": f'Pitch Location Heatmap for {result}',
+        "title": f'Pitch Location Heatmap',
         "xaxis":dict(title='Left-Right', range=[-2, 2], dtick=0.5),
         "yaxis":dict(title='Up-Down', range=[1, 4], dtick=0.5),
         "shapes":[
@@ -79,7 +85,9 @@ def plot_pitch_result_heatmap(result):
                 line=dict(color="Black"),
                 fillcolor="rgba(0,0,0,0)",
             )
-        ]
+        ], 
+        "width": 600, 
+        "height": 600
     }
 
     # Create figure and show

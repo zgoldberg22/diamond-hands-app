@@ -1,6 +1,6 @@
 import json
 import os
-import numpy as np
+import pandas as pd 
 
 def get_json(file_name):
     root = os.path.realpath(os.path.dirname(__file__))
@@ -25,3 +25,12 @@ def get_basic_pitches_df():
 
 def get_ball_tracking_df():
     return pd.DataFrame(get_ball_tracking_data())
+
+def filter_by_args(args, data): 
+   filtered_data = data.copy()
+   for key, value in args.items():
+      if key in filtered_data.columns and value is not None:
+         filtered_data[key] = filtered_data[key].astype("string")
+         updated_value = value.strip('"') if '"' in value else value
+         filtered_data = filtered_data[filtered_data[key] == updated_value]
+   return filtered_data

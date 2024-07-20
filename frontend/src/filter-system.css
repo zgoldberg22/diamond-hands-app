@@ -1,0 +1,31 @@
+.filter-system {
+   margin-bottom: 20px;
+ }
+ 
+ .filter-row {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap: 15px;
+   align-items: flex-start;
+ }
+ 
+ .filter-item {
+   display: flex;
+   flex-direction: column;
+   min-width: 150px;
+ }
+ 
+ .filter-item label {
+   margin-bottom: 5px;
+ }
+ 
+ .filter-item select,
+ .filter-item input {
+   width: 100%;
+ }
+ 
+ button {
+   margin-top: 10px;
+ }
+ 
