@@ -61,3 +61,28 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Custom styles for Bootstrap tabs */
+.nav-pills .nav-link {
+  color: #333;
+  background-color: transparent;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.nav-item .nav-link:hover {
+  background-color: rgba(52, 58, 64, 0.1);
+  color: rgba(0, 0, 0, 1); 
+}
+
+.nav-pills .nav-item .nav-link.active {
+  color: #fff;
+  background-color: #343a40;
+  border-radius: 0px;
+}
+
+.nav-pills .nav-item .nav-link:not(.active) {
+  border-color: #343a40;
+  color: rgba(97, 97, 97, 1); 
+  border-radius: 0px;
+}

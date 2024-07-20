@@ -1,22 +1,15 @@
 import * as React from 'react';
-import {useState, useRef, useEffect, useCallback} from 'react'; 
-import { DataGrid, GridToolbar} from '@mui/x-data-grid';
-import data from "../../backend/basic_pitches.json"
-import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
-import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
+import {useState, useEffect} from 'react'; 
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.css'; 
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 
-import ThreeDPlot from '/src/ThreeDPlot.jsx';
-import FilterSystem from './FilterSystem';
-import PitchHeatMap from "./PitchHeatMap";
 import ballTrackingData from "../../backend/ball_tracking.json"; 
 import getBasicPitches from './api'; 
+import AllPitches from './all_pitches/AllPitches'; 
+import IndividualPitch from './individual_pitch/IndividualPitch';
         
-const rows = data; 
 
 const columns = [
   { field: 'gameId', headerName: 'Game ID', width: 150 },
@@ -53,123 +46,45 @@ const games = [
 ]
 
 export default function App() {
-  const gridRef = useRef(null);
   const [basicPitchesData, setBasicPitchesData] = useState([]); 
   const [filteredData, setFilteredData] = useState([]); 
-  const [selectedEventId, setSelectedEventId] = useState(null);
-  const [filters, setFilters] = useState({
-    games: [],
-    pitchTypes: [],
-    selectedStrikes: null,
-    selectedBalls: null,
-    pitchSpeed: 100.00,
-    outsInning: null,
-    outsPlay: null,
-    result: null
-  });  
-
+  
   useEffect(() => {
-    setBasicPitchesData(rows);
-    // async function fetchData() {
-    //   const resData = await getBasicPitches(); 
-    //   setBasicPitchesData(resData); 
-    //   setFilteredData(resData); 
-    // }  
+    async function fetchData() {
+      const resData = await getBasicPitches(); 
+      setBasicPitchesData(resData); 
+      setFilteredData(resData); 
+    }  
 
-    // fetchData(); 
+    fetchData(); 
   }, []); 
 
-  
-
-  const defaultColDef = {
-    width: 150,
-    resizable: true
-  };
-
-  const onSelectionChanged = useCallback(() => {
-    const selectedRows = gridRef.current.api.getSelectedRows();
-    if (selectedRows.length > 0) {
-      const eventId = selectedRows[0].pitcheventId;
-      console.log(eventId)
-      setSelectedEventId(eventId);
-    } else {
-      setSelectedEventId(null);
-    }
-  }, []);
 
   return (
-    <div className="gridAndFilters">
-      <Tabs
-        defaultActiveKey="allGames"
-        id="justify-tab-example"
-        className="mb-3"
-        variant='tabs'
-        justify
-      >
-        <Tab eventKey="allGames" title="All Games/Overall">
-          All Games/Overall
-        </Tab>
-        <Tab eventKey="pitch" title="Individual Pitch">
-          Individual Pitch
-        </Tab>
-      </Tabs>
+    <div>
+      <h1>
+        Diamond Hands Dashboard
+      </h1>
+      <br />
+      <div className="gridAndFilters">
+        <Tabs
+          defaultActiveKey="allGames"
+          id="justify-tab-example"
+          className="mb-3"
+          variant='pills'
+          justify
+        >
+          <Tab eventKey="allGames" title="All Games/Overall">
+            <AllPitches pitchesData={basicPitchesData} ballData={ballTrackingData} />
+          </Tab>
+          <Tab eventKey="pitch" title="Individual Pitch">
+            <IndividualPitch pitchesData={basicPitchesData} />
+          </Tab>
+        </Tabs>
 
-      <div className="filters"> 
-        {/* <div>
-
-        <div> 
-          <p>Outs:</p>
-          <label for="outsInning">Inning: </label>
-          <select name="outsInning" id="outsInning" onChange={(event) => (setFilters(prevState => ({...prevState, outsInning: event.target.value})))} > 
-            <option></option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-          </select>
-          <br/>
-          <label for="outsPlay">Play: </label>
-          <select name="outsPlay" id="outsPlay" onChange={(event) => (setFilters(prevState => ({...prevState, outsPlay: event.target.value})))}> 
-            <option></option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-          </select>
-        </div>    */}
-
-        {basicPitchesData && <FilterSystem gridRef={gridRef} setBasicPitchesData={setBasicPitchesData} data={data} games={games} setAppFilters={setFilters} />}
-       
       </div>
-
-      <br />
-
-      {basicPitchesData && ballTrackingData && filters.result && <PitchHeatMap 
-        basicPitches={basicPitchesData} 
-        ballTracking={ballTrackingData} 
-        result={filters.result} 
-      /> }
-
-    {basicPitchesData && <div className="ag-theme-quartz" rowHeight={200} style={{ height: 600, width: '100%' }}>
-        <AgGridReact
-          ref={gridRef}
-          rowData={basicPitchesData}
-          columnDefs={columns}
-          pagination={true}
-          defaultColDef={{
-            ...defaultColDef, 
-            // filter: true, 
-            // floatingFilter: true
-          }}
-          rowSelection="single"  
-          onSelectionChanged={onSelectionChanged}
-        />
-      </div> }
-
-      <br />
-
-      {selectedEventId && <ThreeDPlot key={selectedEventId} eventId={selectedEventId} />}
-
-      {/* <BatPlot /> */}
-
-</div>
+    </div>
+    
   );
 }
 

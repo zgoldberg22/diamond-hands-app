@@ -28,4 +28,8 @@
  button {
    margin-top: 10px;
  }
+
+ .countFilter input{
+  width: 50px; 
+ }
  

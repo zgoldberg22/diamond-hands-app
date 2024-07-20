@@ -11,7 +11,9 @@ export default async function getBasicPitches() {
 }
 
 export async function getHeatmapData(result) {
-   const response = fetch(`http://127.0.0.1:5000/heatmap?result=${result}`)
+   let api_url = 'http://127.0.0.1:5000/heatmap'; 
+   api_url = result === "" ? api_url : `${api_url}?result=${result}`
+   const response = fetch(api_url)
       .then(response => response.json())
       .then(data => {
       console.log(data)

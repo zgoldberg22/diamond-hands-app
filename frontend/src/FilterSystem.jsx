@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './filter-system.css'
 
-const FilterSystem = ({ gridRef, setBasicPitchesData, data, games, setAppFilters }) => {
+const games = [
+   {id: "4a2da1a0-f7ac-48f4-9e87-b6dd1d867bfb"}, 
+   {id: "cc0c12f1-54f4-4325-a97f-009d86ee1359"},
+   {id: "88638515-1fa8-497a-bbea-2a85b9926e10"},
+   {id: "89a50db1-aa4e-47cc-9c65-083aed19d845"},
+ ]; 
+
+const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => {
   const [filters, setFilters] = useState({
     games: [],
     pitchTypes: [],
@@ -58,7 +65,7 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, games, setAppFilters
       {/* <div className='filter-row'> */}
          <div className="filter-item"> 
             <label>Game:</label>
-            <select multiple onChange={(e) => updateFilter('games', Array.from(e.target.selectedOptions, option => option.value))}>
+            <select onChange={(e) => updateFilter('games', Array.from(e.target.selectedOptions, option => option.value))}>
                {games.map(game => <option key={game.id} value={game.id}>{game.id}</option>)}
             </select>
          </div>
@@ -67,12 +74,11 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, games, setAppFilters
       {/* <div className='filter-row'>  */}
          <div className='filter-item'>
             <label for="result">Result:</label> 
-            <select name="result" id="result" onChange={(e) => updateFilter('result', e.target.value)}>
-               <option value=''></option>
+            <select name="result" id="result" default="" onChange={(e) => updateFilter('result', e.target.value)}>
+               <option value="">Result</option>
                <option value="HitIntoPlay">Hit Into Play</option>
                <option value="Strike">Strike</option>
                <option value="Ball">Ball</option>
-               <option value="Pickoff">Pickoff</option>
             </select>
          </div>
       {/* </div> */}
@@ -80,7 +86,7 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, games, setAppFilters
       {/* <div className='filter-row'> */}
          <div className='filter-item'> 
             <label>Pitch Types:</label>
-            <select multiple onChange={(e) => updateFilter('pitchTypes', Array.from(e.target.selectedOptions, option => option.value))}>
+            <select onChange={(e) => updateFilter('pitchTypes', Array.from(e.target.selectedOptions, option => option.value))}>
                <option value="Sinker">Sinker</option>
                <option value="Slider">Slider</option>
                <option value="FourSeamFastball">Four Seam Fastball</option>

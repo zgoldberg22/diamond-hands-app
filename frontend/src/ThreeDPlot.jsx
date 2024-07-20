@@ -111,22 +111,7 @@ export default function ThreeDPlot({eventId}) {
       fieldOutline, 
       pitchingRubber
     ]);
-  }, [eventId]); // Empty dependency array means this effect runs once on mount
-
-  // const onRelayout = useCallback((eventData) => {
-  //   if (eventData['scene.camera']) {
-  //     const camera = eventData['scene.camera'];
-  //     console.log('Current camera view:', {
-  //       eye: camera.eye,
-  //       center: camera.center,
-  //       up: camera.up
-  //     });
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-
-  // }, [xRange, yRange, zRange]);
+  }, [eventId]); 
 
   const updateAxisRange = (axis, value) => {
     const range = [-value, value];
@@ -151,7 +136,7 @@ export default function ThreeDPlot({eventId}) {
         layout={{
           width: 1200,
           height: 600,
-          title: 'Plot of Baseball Pitch Path: ', 
+          title: `Plot of Baseball Pitch Path for Event: ${eventId}`, 
           scene: {
             aspectmode: 'data', 
             camera: {

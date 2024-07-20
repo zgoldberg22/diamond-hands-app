@@ -35,15 +35,14 @@ def first_occurence_closest_to_zero(group):
     
     return closest_row
 
-# pass in args as dictionary 
+# pass in args as dictionary
 # returns the data and layout needed for the Plotly component in the frontend 
 def plot_pitch_result_heatmap(args):
-    filtered_pitches = filter_by_args(args, basic_pitches)
-    if filtered_pitches.empty:
-        return {}
-
-    print(filtered_pitches)
-    # filtered_pitches = basic_pitches[basic_pitches['result'] == result]
+    filtered_pitches = basic_pitches
+    if args: 
+        filtered_pitches = filter_by_args(args, basic_pitches)
+        if filtered_pitches.empty:
+            return {}
 
     # Merge the DataFrames on pitcheventId and eventId
     merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')
@@ -93,8 +92,6 @@ def plot_pitch_result_heatmap(args):
 
     # Create figure and show
     return {"data": heatmap, "layout": layout}
-
-
 
 def plot_by_pitch_result_3d(result): 
     filtered_pitches = basic_pitches[basic_pitches['result'] == result]
