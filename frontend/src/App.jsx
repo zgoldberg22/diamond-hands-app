@@ -4,6 +4,8 @@ import './App.css'
 import 'bootstrap/dist/css/bootstrap.css'; 
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import { Modal, Button } from 'react-bootstrap';
+import { InfoCircle } from 'react-bootstrap-icons';
 
 import ballTrackingData from "../../backend/ball_tracking.json"; 
 import getBasicPitches from './api'; 
@@ -48,6 +50,10 @@ const games = [
 export default function App() {
   const [basicPitchesData, setBasicPitchesData] = useState([]); 
   const [filteredData, setFilteredData] = useState([]); 
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   
   useEffect(() => {
     async function fetchData() {
@@ -62,10 +68,26 @@ export default function App() {
 
   return (
     <div>
-      <h1>
-        Diamond Hands Dashboard
-      </h1>
+      <div className="header">
+        <h1>
+          Diamond Hands Dashboard
+        </h1>
+        <Button variant="secondary" onClick={handleShow} className="icon-button">
+          <InfoCircle className="icon" size={20} />
+          <span className="button-text">About</span>
+        </Button>
+      </div>
+      
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>About the Data</Modal.Title>
+        </Modal.Header>
+        <Modal.Body> Add description about our project and the data here? ... </Modal.Body>
+      </Modal>
+
       <br />
+      
       <div className="gridAndFilters">
         <Tabs
           defaultActiveKey="allGames"
