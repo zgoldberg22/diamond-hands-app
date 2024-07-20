@@ -9,12 +9,14 @@ CORS(app)
 
 @app.route("/")
 def home(): 
-   return "Home"
+   return "DIAMOND HANDS"
 
+# GET request to get all data from basic_pitches json file or filters with query params 
+# Example of a request: http://127.0.0.1:5000/basic_pitches?outsinning=1&result=Strike
 @app.route("/basic_pitches")
 def get_basic_pitches():
    try: 
-      args = request.args.to_dict()
+      args = request.args.to_dict() # gets query params 
       print(args)
       if args:
          pitches = get_basic_pitches_df()
@@ -36,12 +38,7 @@ def get_heatmap():
 
    return jsonify(heatmap), 200 # created successfully 
 
-
-#filters for heatmap: 
-   # outs
-   # result
-   # action 
-   # player id (don't have yet)
+## IMPORTANT - Anything that is being returned from a Flask app function needs to return a Json serializable object (jsonify() function does this), but some types, like numpy arrays, are not serializable
 
 if __name__ == "__main__":
    app.run(debug=True)

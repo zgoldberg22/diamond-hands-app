@@ -35,7 +35,8 @@ def first_occurence_closest_to_zero(group):
     
     return closest_row
 
-# pass in args 
+# pass in args as dictionary 
+# returns the data and layout needed for the Plotly component in the frontend 
 def plot_pitch_result_heatmap(args):
     filtered_pitches = filter_by_args(args, basic_pitches)
     if filtered_pitches.empty:
@@ -152,52 +153,3 @@ def plot_by_pitch_result_3d(result):
     )
 
     fig.show()
-
-
-
-
-# def plot_pitch_result_heatmap(result):
-#     filtered_pitches = basic_pitches[basic_pitches['result'] == result]
-
-#     # Merge the DataFrames on pitcheventId and eventId
-#     merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')
-#     closest_points = merged_df.groupby('pitcheventId').apply(first_occurence_closest_to_zero)
-
-#     # Extract the pos_x and pos_z coordinates
-#     pos_x = closest_points['pos_x']
-#     pos_z = closest_points['pos_z']
-
-#     # Create 2D histogram
-#     x_bins = np.linspace(-2, 2, 50)
-#     z_bins = np.linspace(-1, 5, 50)
-#     hist, x_edges, z_edges = np.histogram2d(pos_x, pos_z, bins=[x_bins, z_bins])
-
-#     # Create heatmap
-#     heatmap = go.Heatmap(
-#         x=x_edges[:-1],
-#         y=z_edges[:-1],
-#         z=hist.T,
-#         colorscale='Blues',
-#         colorbar=dict(title='Frequency')
-#     )
-
-#     # Create layout
-#     layout = go.Layout(
-#         title=f'Pitch Location Heatmap for {result}',
-#         xaxis=dict(title='Left-Right', range=[-2, 2]),
-#         yaxis=dict(title='Up-Down', range=[-1, 5]),
-#         shapes=[
-#             # Add strike zone rectangle
-#             dict(
-#                 type="rect",
-#                 x0=-0.7083, x1=0.7083,
-#                 y0=1.5, y1=3.5,
-#                 line=dict(color="Red"),
-#                 fillcolor="rgba(255,0,0,0.2)",
-#             )
-#         ]
-#     )
-
-#     # Create figure and show
-#     fig = go.Figure(data=[heatmap], layout=layout)
-#     fig.show()
