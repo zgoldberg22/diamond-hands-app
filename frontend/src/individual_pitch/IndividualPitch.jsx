@@ -33,13 +33,6 @@ const columns = [
    { field: 'strikesplay', headerName: 'Strikes Play', width: 150 },
    { field: 'hiteventId', headerName: 'Hit Event ID', width: 150 }
  ];
- 
- const games = [
-   {id: "4a2da1a0-f7ac-48f4-9e87-b6dd1d867bfb"}, 
-   {id: "cc0c12f1-54f4-4325-a97f-009d86ee1359"},
-   {id: "88638515-1fa8-497a-bbea-2a85b9926e10"},
-   {id: "89a50db1-aa4e-47cc-9c65-083aed19d845"},
- ];
 
  const defaultColDef = {
    width: 150,
@@ -83,7 +76,7 @@ export default function IndividualPitch({pitchesData}) {
    return (
       <div>
          <FilterSystem gridRef={gridRef} setBasicPitchesData={setBasicPitchesData} data={allPitchData} setAppFilters={setFilters} />
-
+        
          {basicPitchesData && 
          <div className="ag-theme-quartz" style={{ height: 600, width: '100%' }}>
             <AgGridReact

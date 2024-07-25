@@ -144,12 +144,6 @@ export default function ThreeDPlot({eventId}) {
               center: {x: 0.1, y: -0.25, z: 0.15},
               up: {x: 0, y: 0, z: 1}
             },
-            // xaxis: {range: [-5, 100]},
-            // yaxis: {range: [-5, 100]},
-            // zaxis: {range: [-5, 100]}
-            // xaxis: {autorange: true},
-            // yaxis: {autorange: true},
-            // zaxis: {autorange: true}
             xaxis: { range: [0, xRange], title: 'X Position' },
             yaxis: { range: [0, yRange], title: 'Y Position' },
             zaxis: { range: [0, zRange], title: 'Z Position' },

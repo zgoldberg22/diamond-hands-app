@@ -8,6 +8,8 @@ import plotly.graph_objects as go
 import numpy as np
 from scipy.stats import gaussian_kde
 from flask import jsonify
+import json
+import plotly.io as pio
 from helpers import get_json, get_basic_pitches_df, get_ball_tracking_df, filter_by_args
 
 
@@ -69,6 +71,7 @@ def plot_pitch_result_heatmap(args):
         "y": z_range.tolist(), 
         "z": f.tolist(), 
         "colorscale": 'YlOrRd',
+        "reversescale": True,
         "colorbar": dict(title='Density')
     }]
 
@@ -93,8 +96,13 @@ def plot_pitch_result_heatmap(args):
     # Create figure and show
     return {"data": heatmap, "layout": layout}
 
-def plot_by_pitch_result_3d(result): 
-    filtered_pitches = basic_pitches[basic_pitches['result'] == result]
+
+def plot_by_pitch_result_3d(args):
+    filtered_pitches = basic_pitches
+    if args: 
+        filtered_pitches = filter_by_args(args, basic_pitches)
+        if filtered_pitches.empty:
+            return {}
 
     # Merge the DataFrames on pitcheventId and eventId
     merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')   
@@ -109,12 +117,12 @@ def plot_by_pitch_result_3d(result):
 
     # Add scatter plot for pitch locations
     scatter = go.Scatter3d(
-        x=pos_x,  # Use pos_x for x-axis (left-right)
-        y=pos_y,  # Use pos_y for y-axis (front-back)
-        z=pos_z,  # Use pos_z for z-axis (up-down)
+        x=pos_x.tolist(),  # Use pos_x for x-axis (left-right)
+        y=pos_y.tolist(),  # Use pos_y for y-axis (front-back)
+        z=pos_z.tolist(),  # Use pos_z for z-axis (up-down)
         mode='markers',
         marker=dict(size=3, color='blue', opacity=0.6),
-        name=result
+        name="Pitches"
     )
     fig.add_trace(scatter)
 
@@ -130,11 +138,11 @@ def plot_by_pitch_result_3d(result):
     fig.add_trace(strike_zone)
 
     fig.update_layout(
-        title=f'Locations for {result}',
+        title=f'Locations for Pitches',
         scene=dict(
-            xaxis_title='Left-Right',
-            yaxis_title='Front-Back',
-            zaxis_title='Up-Down',
+            xaxis_title='x-axis (Left-Right)',
+            yaxis_title='y-axis (Front-Back)',
+            zaxis_title='z-axis (Up-Down)',
             xaxis=dict(range=[-2, 2]),
             yaxis=dict(range=[-3, 3]),
             zaxis=dict(range=[-1, 5]),
@@ -149,4 +157,14 @@ def plot_by_pitch_result_3d(result):
         width=800
     )
 
-    fig.show()
+    data = fig['data']
+    layout = fig['layout']
+
+    # Serialize data and layout to JSON
+    fig_dict = {
+        'data': [trace.to_plotly_json() for trace in fig.data],
+        'layout': fig.layout.to_plotly_json()
+    }
+
+    # Return the JSON string
+    return fig_dict

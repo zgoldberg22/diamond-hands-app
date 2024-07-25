@@ -4,14 +4,14 @@ import {getHeatmapData} from './api';
 import getBasicPitches from './api'
 
 // Heatmap function
-const PitchHeatMap = ({ basicPitches, ballTracking, result }) => {
-  const [res, setRes] = useState(result); 
+const PitchHeatMap = ({ basicPitches, ballTracking, filters }) => {
+  const [filts, setFilts] = useState(filters); 
   const [heatmapData, setHeatmapData] = useState({}); 
 
   // to get heatmap for all data to start
   useEffect(() => {
     async function fetchData() {
-      const resData = await setHeatmapData(""); 
+      const resData = await getHeatmapData(""); 
       setHeatmapData(resData); 
     }  
 
@@ -20,12 +20,11 @@ const PitchHeatMap = ({ basicPitches, ballTracking, result }) => {
 
   useEffect(() => {
     async function fetchData() {
-      const resData = await getHeatmapData(result); 
-      
-      setHeatmapData(resData); 
+      const filts = await getHeatmapData(filters); 
+      setHeatmapData(filts); 
     }  
     fetchData(); 
-  }, [basicPitches, result])
+  }, [basicPitches, filters])
 
   return (
   <div> 

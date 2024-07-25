@@ -28,6 +28,9 @@ def get_ball_tracking_df():
 
 def filter_by_args(args, data): 
    filtered_data = data.copy()
+   if 'swing' in args and args['swing'].lower() == 'true':
+        filtered_data = filtered_data[filtered_data['hiteventId'].notnull()]
+
    for key, value in args.items():
       if key in filtered_data.columns and value is not None:
          filtered_data[key] = filtered_data[key].astype("string")
