@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useState, useRef, useEffect, useCallback} from 'react'; 
 // import '../filter-system.css'; 
+import './all-pitches.css'
 
 import FilterSystem from '../FilterSystem';
 import PitchResultPlot from '../PitchScatterPlot';
@@ -46,22 +47,23 @@ export default function AllPitches({pitchesData, ballData}) {
                </select>
             </div>
          </div> */}
+         <div className="graphs">
+            {basicPitchesData && ballTrackingData &&
+               <PitchHeatMap 
+                  basicPitches={basicPitchesData} 
+                  ballTracking={ballTrackingData} 
+                  filters={filters} 
+               /> 
+            }
 
-         {basicPitchesData && ballTrackingData &&
-            <PitchHeatMap 
-               basicPitches={basicPitchesData} 
-               ballTracking={ballTrackingData} 
-               filters={filters} 
-            /> 
-         }
-
-         {basicPitchesData && ballTrackingData && 
-            <PitchScatterPlot 
-               basicPitches={basicPitchesData}
-               ballTracking={ballTrackingData}
-               filters={filters}
-            />
-         }
+            {basicPitchesData && ballTrackingData && 
+               <PitchScatterPlot 
+                  basicPitches={basicPitchesData}
+                  ballTracking={ballTrackingData}
+                  filters={filters}
+               />
+            }
+         </div>
 
       </div>
    )
