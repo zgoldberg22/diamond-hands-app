@@ -12,7 +12,6 @@ import json
 import plotly.io as pio
 from helpers import get_json, get_basic_pitches_df, get_ball_tracking_df, filter_by_args
 
-
 # Access the parsed dataframes
 basic_pitches = get_basic_pitches_df()
 ball_tracking = get_ball_tracking_df()
@@ -141,7 +140,7 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
             aspectmode='manual',
             aspectratio=dict(x=1, y=1, z=1.5),
             camera=dict(
-                eye=dict(x=0, y=3, z=0),  # Adjusted for y-z view
+                eye=dict(x=0, y=-3, z=0.25),  # Adjusted for y-z view
                 center=dict(x=0, y=0, z=0),
                 up=dict(x=0, y=0, z=1)  # Ensure the z-axis is pointing up
             )

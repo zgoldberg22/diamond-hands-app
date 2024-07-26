@@ -32,6 +32,7 @@ export async function getHeatmapData(filters) {
 
 export async function getAllPitchGraphs(filters) {
    let api_url = buildApiUrl(filters, 'http://127.0.0.1:5000/all_pitch_graphs'); 
+   console.log(api_url); 
 
    const response = fetch(api_url)
       .then(response => response.json())

@@ -3,7 +3,6 @@ import {useState, useRef, useEffect, useCallback} from 'react';
 // import '../filter-system.css'; 
 import './all-pitches.css';
 
-
 import FilterSystem from '../FilterSystem';
 import PitchResultPlot from '../PitchScatterPlot';
 import PitchHeatMap from "../PitchHeatMap";
@@ -48,6 +47,7 @@ export default function AllPitches() {
    }, []);
 
    useEffect(() => {
+      console.log(filters); 
       async function fetchData() {
          const resData = await getAllPitchGraphs(filters); 
          setScatterPlotData(resData["scatter_plot"]);
@@ -77,8 +77,7 @@ export default function AllPitches() {
             </div>
          </div>
         )
-      }
-         
+      }  
 
       </div>
    )

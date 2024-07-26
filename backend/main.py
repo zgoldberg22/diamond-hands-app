@@ -13,7 +13,7 @@ def home():
 
 # GET request to get all data from basic_pitches json file or filters with query params 
 # Example of a request: http://127.0.0.1:5000/basic_pitches?outsinning=1&result=Strike
-@app.route("/basic_pitches")
+@app.route("/basic_pitches", methods=["GET"])
 @cross_origin()
 def get_basic_pitches():
    try: 
@@ -31,7 +31,7 @@ def get_basic_pitches():
    except Exception as e: 
       return jsonify({"error": str(e)}), 500
 
-@app.route("/all_pitch_graphs")
+@app.route("/all_pitch_graphs", methods=["GET"])
 @cross_origin()
 def get_all_pitch_graphs(): 
    args = request.args.to_dict()

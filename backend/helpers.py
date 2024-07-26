@@ -31,9 +31,18 @@ def filter_by_args(args, data):
    if 'swing' in args and args['swing'].lower() == 'true':
         filtered_data = filtered_data[filtered_data['hiteventId'].notnull()]
 
+   if 'teamId' in args: 
+      filtered_data = filtered_data[filtered_data['teamId'] == float(args['teamId'])]
+
+   if 'personId' in args: 
+      filtered_data = filtered_data[filtered_data['personId'] == float(args['personId'])]
+
    for key, value in args.items():
+      if key in ['teamId', 'personId', 'swing']: 
+         continue
       if key in filtered_data.columns and value is not None:
          filtered_data[key] = filtered_data[key].astype("string")
          updated_value = value.strip('"') if '"' in value else value
          filtered_data = filtered_data[filtered_data[key] == updated_value]
+
    return filtered_data

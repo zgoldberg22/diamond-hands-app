@@ -63,8 +63,8 @@ export default function App() {
       <div className="gridAndFilters">
         <Tabs
           defaultActiveKey="allGames"
-          id="justify-tab-example"
-          className="mb-3"
+          id="tab"
+          className="tabs"
           variant='pills'
           justify
         >
