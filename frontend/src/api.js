@@ -1,5 +1,7 @@
 export default async function getBasicPitches() {
-   let res = fetch('http://127.0.0.1:5000/basic_pitches')
+   let api_url = 'http://127.0.0.1:5000/basic_pitches'
+
+   let res = fetch(api_url)
     .then(response => response.json())
     .then(data => {
       // console.log(data)

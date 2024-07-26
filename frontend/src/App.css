@@ -6,6 +6,10 @@
   align-content: flex-items;
 }
 
+.app {
+  width: 85vw; 
+}
+
 .header {
   display: flex; 
   align-items: center;

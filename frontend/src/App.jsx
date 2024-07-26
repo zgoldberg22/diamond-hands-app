@@ -11,34 +11,6 @@ import ballTrackingData from "../../backend/ball_tracking.json";
 import getBasicPitches from './api'; 
 import AllPitches from './all_pitches/AllPitches'; 
 import IndividualPitch from './individual_pitch/IndividualPitch';
-        
-
-const columns = [
-  { field: 'gameId', headerName: 'Game ID', width: 150 },
-  { field: 'pitcheventId', headerName: 'Pitch ID', width: 150 },
-  { field: 'result', headerName: 'Result', width: 150 },
-  { field: 'action', headerName: 'Action', width: 150 },
-  { field: 'pitchtype', headerName: 'Pitch Type', width: 150 },
-  { field: 'pitchspeed_mph', headerName: 'Pitch Speed (mph)', width: 150 },
-  { field: 'pitchspeed_kph', headerName: 'Pitch Speed (kph)', width: 150 },
-  { field: 'pitchspeed_mps', headerName: 'Pitch Speed (mps)', width: 150 },
-  { field: 'pitchspin_rpm', headerName: 'Pitch Spin (rpm)', width: 150 },
-  { field: 'hitspeed_mph', headerName: 'Hit Speed (mph)', width: 150 },
-  { field: 'hitspeed_kph', headerName: 'Hit Speed (kph)', width: 150 },
-  { field: 'hitspeed_mps', headerName: 'Hit Speed (mps)', width: 150 },
-  { field: 'hitspin_rpm', headerName: 'Hit Spin (rpm)', width: 150 },
-  { field: 'team1', headerName: 'Team 1', width: 150 },
-  { field: 'team2', headerName: 'Team 2', width: 150 },
-  // { field: 'runsinnings', headerName: 'Runs Innings', width: 150 },
-  { field: 'runsplay', headerName: 'Runs Play', width: 150 },
-  { field: 'outsinning', headerName: 'Outs Inning', width: 150 },
-  { field: 'outsplay', headerName: 'Outs Play', width: 150},
-  { field: 'ballsplateAppearance', headerName: 'Balls Plate Appearance', width: 150 },
-  { field: 'ballsplay', headerName: 'Balls Play', width: 150 },
-  { field: 'strikesplateAppearance', headerName: 'Strikes Plate Appearance', width: 150 },
-  { field: 'strikesplay', headerName: 'Strikes Play', width: 150 },
-  { field: 'hiteventId', headerName: 'Hit Event ID', width: 150 }
-];
 
 const games = [
   {id: "4a2da1a0-f7ac-48f4-9e87-b6dd1d867bfb"}, 
@@ -55,19 +27,19 @@ export default function App() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   
-  useEffect(() => {
-    async function fetchData() {
-      const resData = await getBasicPitches(); 
-      setBasicPitchesData(resData); 
-      setFilteredData(resData); 
-    }  
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const resData = await getBasicPitches(); 
+  //     setBasicPitchesData(resData); 
+  //     setFilteredData(resData); 
+  //   }  
 
-    fetchData(); 
-  }, []); 
+  //   fetchData(); 
+  // }, []); 
 
 
   return (
-    <div>
+    <div className="app">
       <div className="header">
         <h1>
           Diamond Hands Dashboard
@@ -97,7 +69,7 @@ export default function App() {
           justify
         >
           <Tab eventKey="allGames" title="All Games/Overall">
-            <AllPitches pitchesData={basicPitchesData} ballData={ballTrackingData} />
+            <AllPitches />
           </Tab>
           <Tab eventKey="pitch" title="Individual Pitch">
             <IndividualPitch pitchesData={basicPitchesData} />
@@ -109,6 +81,3 @@ export default function App() {
     
   );
 }
-
-
-

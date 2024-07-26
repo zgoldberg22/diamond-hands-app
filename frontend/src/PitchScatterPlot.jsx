@@ -27,7 +27,7 @@ const PitchScatterPlot = ({ scatterPlot }) => {
    
    return (
       <div>
-         {scatterPlot && <Plot data={scatterPlot["data"]} layout={scatterPlot["layout"]}  />}
+         {scatterPlot && <Plot data={scatterPlot["data"]} layout={scatterPlot["layout"]} />}
         
       </div>
    );
