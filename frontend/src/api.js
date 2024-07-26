@@ -10,12 +10,27 @@ export default async function getBasicPitches() {
    return res; 
 }
 
+
+
 export async function getHeatmapData(filters) {
    let api_url = buildApiUrl(filters, 'http://127.0.0.1:5000/heatmap'); 
    // console.log(filters)
    // console.log(api_url); 
 
    // api_url = result === "" ? api_url : `${api_url}?result=${result}`
+   const response = fetch(api_url)
+      .then(response => response.json())
+      .then(data => {
+      // console.log(data)
+      return data; 
+   });
+   
+   return response; 
+}
+
+export async function getAllPitchGraphs(filters) {
+   let api_url = buildApiUrl(filters, 'http://127.0.0.1:5000/all_pitch_graphs'); 
+
    const response = fetch(api_url)
       .then(response => response.json())
       .then(data => {

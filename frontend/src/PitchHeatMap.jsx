@@ -4,27 +4,27 @@ import {getHeatmapData} from './api';
 import getBasicPitches from './api'
 
 // Heatmap function
-const PitchHeatMap = ({ basicPitches, ballTracking, filters }) => {
-  const [filts, setFilts] = useState(filters); 
-  const [heatmapData, setHeatmapData] = useState({}); 
+const PitchHeatMap = ({ heatmapData }) => {
+  // const [filts, setFilts] = useState(filters); 
+  // const [heatmapData, setHeatmapData] = useState({}); 
 
   // to get heatmap for all data to start
-  useEffect(() => {
-    async function fetchData() {
-      const resData = await getHeatmapData(""); 
-      setHeatmapData(resData); 
-    }  
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const resData = await getHeatmapData(""); 
+  //     setHeatmapData(resData); 
+  //   }  
 
-    fetchData(); 
-  }, [basicPitches])
+  //   fetchData(); 
+  // }, [basicPitches])
 
-  useEffect(() => {
-    async function fetchData() {
-      const filts = await getHeatmapData(filters); 
-      setHeatmapData(filts); 
-    }  
-    fetchData(); 
-  }, [basicPitches, filters])
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     const filts = await getHeatmapData(filters); 
+  //     setHeatmapData(filts); 
+  //   }  
+  //   fetchData(); 
+  // }, [basicPitches, filters])
 
   return (
   <div> 

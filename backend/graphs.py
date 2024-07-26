@@ -37,15 +37,22 @@ def first_occurence_closest_to_zero(group):
     
     return closest_row
 
-# pass in args as dictionary
-# returns the data and layout needed for the Plotly component in the frontend 
-def plot_pitch_result_heatmap(args):
+def get_heatmap_and_scatter(args):
     filtered_pitches = basic_pitches
     if args: 
         filtered_pitches = filter_by_args(args, basic_pitches)
         if filtered_pitches.empty:
             return {}
 
+    heatmap = plot_pitch_result_heatmap(filtered_pitches)
+    scatter_plot = plot_by_pitch_result_3d(filtered_pitches)
+
+    return {"heatmap": heatmap, "scatter_plot": scatter_plot}
+
+
+# pass in args as dictionary
+# returns the data and layout needed for the Plotly component in the frontend 
+def plot_pitch_result_heatmap(filtered_pitches):
     # Merge the DataFrames on pitcheventId and eventId
     merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')
     closest_points = merged_df.groupby('pitcheventId').apply(first_occurence_closest_to_zero)
@@ -97,12 +104,12 @@ def plot_pitch_result_heatmap(args):
     return {"data": heatmap, "layout": layout}
 
 
-def plot_by_pitch_result_3d(args):
-    filtered_pitches = basic_pitches
-    if args: 
-        filtered_pitches = filter_by_args(args, basic_pitches)
-        if filtered_pitches.empty:
-            return {}
+def plot_by_pitch_result_3d(filtered_pitches):
+    # filtered_pitches = basic_pitches
+    # if args: 
+    #     filtered_pitches = filter_by_args(args, basic_pitches)
+    #     if filtered_pitches.empty:
+    #         return {}
 
     # Merge the DataFrames on pitcheventId and eventId
     merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')   
@@ -153,8 +160,8 @@ def plot_by_pitch_result_3d(args):
                 center=dict(x=0, y=0, z=0)
             )
         ),
-        height=800,
-        width=800
+        height=600,
+        width=600
     )
 
     data = fig['data']

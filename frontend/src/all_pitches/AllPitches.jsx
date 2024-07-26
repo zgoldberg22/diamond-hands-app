@@ -7,6 +7,7 @@ import FilterSystem from '../FilterSystem';
 import PitchResultPlot from '../PitchScatterPlot';
 import PitchHeatMap from "../PitchHeatMap";
 import PitchScatterPlot from '../PitchScatterPlot';
+import {getAllPitchGraphs} from '../api';
 
 const games = [
    {id: "12345641"}, 
@@ -30,11 +31,35 @@ export default function AllPitches({pitchesData, ballData}) {
       result: ""
    });  
 
+   const [scatterPlotData, setScatterPlotData] = useState({}); 
+   const [heatmapData, setHeatmapData] = useState({}); 
+
+
    useEffect(() => {
-      setBasicPitchesData(pitchesData); 
-      setAllPitchData(pitchesData); 
-      setBallTrackingData(ballData); 
-   }, [pitchesData, ballData]);
+      // setBasicPitchesData(pitchesData); 
+      // setAllPitchData(pitchesData); 
+      // setBallTrackingData(ballData); 
+
+      async function fetchData() {
+         const resData = await getAllPitchGraphs(""); 
+         setScatterPlotData(resData["scatter_plot"]);
+         setHeatmapData(resData["heatmap"]);  
+      }
+
+      fetchData(); 
+
+   }, []);
+
+   useEffect(() => {
+      async function fetchData() {
+         const resData = await getAllPitchGraphs(filters); 
+         setScatterPlotData(resData["scatter_plot"]);
+         setHeatmapData(resData["heatmap"]);  
+      }
+
+      fetchData(); 
+      
+   }, [filters])
 
    return (
       <div>
@@ -48,21 +73,20 @@ export default function AllPitches({pitchesData, ballData}) {
             </div>
          </div> */}
          <div className="graphs">
-            {basicPitchesData && ballTrackingData &&
+            {/* {basicPitchesData && ballTrackingData && */}
                <PitchHeatMap 
-                  basicPitches={basicPitchesData} 
-                  ballTracking={ballTrackingData} 
-                  filters={filters} 
+                  // basicPitches={basicPitchesData} 
+                  // ballTracking={ballTrackingData} 
+                  // filters={filters}
+                  heatmapData={heatmapData} 
                /> 
-            }
+            {/* } */}
 
-            {basicPitchesData && ballTrackingData && 
+            {/* {basicPitchesData && ballTrackingData &&  */}
                <PitchScatterPlot 
-                  basicPitches={basicPitchesData}
-                  ballTracking={ballTrackingData}
-                  filters={filters}
+                  scatterPlot={scatterPlotData}
                />
-            }
+            {/* } */}
          </div>
 
       </div>

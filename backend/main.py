@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 # from heatmap import plot_pitch_result_heatmap
 from helpers import get_basic_pitches_json, filter_by_args, get_basic_pitches_df
-from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d
+from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_heatmap_and_scatter
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
@@ -30,6 +30,17 @@ def get_basic_pitches():
          return jsonify(pitches), 200
    except Exception as e: 
       return jsonify({"error": str(e)}), 500
+
+@app.route("/all_pitch_graphs")
+@cross_origin()
+def get_all_pitch_graphs(): 
+   # data = request.get_json() # get json that is passed in the body of the request
+   args = request.args.to_dict() #converts body to dictionary
+   # print(args)
+   all_graphs = get_heatmap_and_scatter(args)
+
+   return jsonify(all_graphs), 200 # created successfully 
+
 
 @app.route("/heatmap")
 @cross_origin()
