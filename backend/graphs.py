@@ -44,23 +44,22 @@ def get_heatmap_and_scatter(args):
         if filtered_pitches.empty:
             return {}
 
-    heatmap = plot_pitch_result_heatmap(filtered_pitches)
-    scatter_plot = plot_by_pitch_result_3d(filtered_pitches)
-
-    return {"heatmap": heatmap, "scatter_plot": scatter_plot}
-
-
-# pass in args as dictionary
-# returns the data and layout needed for the Plotly component in the frontend 
-def plot_pitch_result_heatmap(filtered_pitches):
-    # Merge the DataFrames on pitcheventId and eventId
-    merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')
+     # Merge the DataFrames on pitcheventId and eventId
+    merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')   
     closest_points = merged_df.groupby('pitcheventId').apply(first_occurence_closest_to_zero)
 
-    # Extract the pos_x and pos_z coordinates
+    # Extract the pos_x, pos_y, and pos_z coordinates
     pos_x = closest_points['pos_x']
+    pos_y = closest_points['pos_y']
     pos_z = closest_points['pos_z']
 
+    heatmap = plot_pitch_result_heatmap(filtered_pitches, pos_x, pos_z)
+    scatter_plot = plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z)
+
+    # return heatmap and scatter_plot data
+    return {"heatmap": heatmap, "scatter_plot": scatter_plot}
+
+def plot_pitch_result_heatmap(filtered_pitches, pos_x, pos_z):
     # Create a grid of points
     x_range = np.linspace(-2, 2, 100)
     z_range = np.linspace(1, 4, 100)
@@ -100,26 +99,11 @@ def plot_pitch_result_heatmap(filtered_pitches):
         "height": 600
     }
 
-    # Create figure and show
+    # return data for heatmap
     return {"data": heatmap, "layout": layout}
 
 
-def plot_by_pitch_result_3d(filtered_pitches):
-    # filtered_pitches = basic_pitches
-    # if args: 
-    #     filtered_pitches = filter_by_args(args, basic_pitches)
-    #     if filtered_pitches.empty:
-    #         return {}
-
-    # Merge the DataFrames on pitcheventId and eventId
-    merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')   
-    closest_points = merged_df.groupby('pitcheventId').apply(first_occurence_closest_to_zero)
-
-    # Extract the pos_x, pos_y, and pos_z coordinates
-    pos_x = closest_points['pos_x']
-    pos_y = closest_points['pos_y']
-    pos_z = closest_points['pos_z']
-
+def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
     fig = make_subplots(rows=1, cols=1, specs=[[{'type': 'scatter3d'}]])
 
     # Add scatter plot for pitch locations

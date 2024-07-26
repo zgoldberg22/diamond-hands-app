@@ -34,33 +34,39 @@ def get_basic_pitches():
 @app.route("/all_pitch_graphs")
 @cross_origin()
 def get_all_pitch_graphs(): 
-   # data = request.get_json() # get json that is passed in the body of the request
-   args = request.args.to_dict() #converts body to dictionary
-   # print(args)
+   args = request.args.to_dict()
    all_graphs = get_heatmap_and_scatter(args)
 
-   return jsonify(all_graphs), 200 # created successfully 
+   return jsonify(all_graphs), 200
+
+# @app.route("/hit_into_plays")
+# @cross_origin()
+# def get_all_pitch_graphs(): 
+#    # args = request.args.to_dict()
+#    all_graphs = get_heatmap_and_scatter(args)
+
+#    return jsonify(all_graphs), 200
 
 
-@app.route("/heatmap")
-@cross_origin()
-def get_heatmap(): 
-   # data = request.get_json() # get json that is passed in the body of the request
-   args = request.args.to_dict() #converts body to dictionary
-   print(args)
-   heatmap = plot_pitch_result_heatmap(args)
+# @app.route("/heatmap")
+# @cross_origin()
+# def get_heatmap(): 
+#    # data = request.get_json() # get json that is passed in the body of the request
+#    args = request.args.to_dict() #converts body to dictionary
+#    print(args)
+#    heatmap = plot_pitch_result_heatmap(args)
 
-   return jsonify(heatmap), 200 # created successfully 
+#    return jsonify(heatmap), 200 # created successfully 
 
-@app.route("/pitch_scatter_plot")
-@cross_origin()
-def get_pitch_scatter_plot(): 
-   # data = request.get_json() # get json that is passed in the body of the request
-   args = request.args.to_dict() #converts body to dictionary
-   # print(args)
-   plot = plot_by_pitch_result_3d(args)
+# @app.route("/pitch_scatter_plot")
+# @cross_origin()
+# def get_pitch_scatter_plot(): 
+#    # data = request.get_json() # get json that is passed in the body of the request
+#    args = request.args.to_dict() #converts body to dictionary
+#    # print(args)
+#    plot = plot_by_pitch_result_3d(args)
 
-   return jsonify(plot), 200 # created successfully 
+#    return jsonify(plot), 200 # created successfully 
 
 ## IMPORTANT - Anything that is being returned from a Flask app function needs to return a Json serializable object (jsonify() function does this), but some types, like numpy arrays, are not serializable
 if __name__ == "__main__":
