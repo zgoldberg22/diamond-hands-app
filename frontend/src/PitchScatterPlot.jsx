@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Plot from 'react-plotly.js';
+
 import {getPitchScatterPlot} from './api';
 
 
@@ -26,7 +27,8 @@ const PitchScatterPlot = ({ scatterPlot }) => {
    
    return (
       <div>
-         {scatterPlot && <Plot data={scatterPlot["data"]} layout={scatterPlot["layout"]} />}
+         {scatterPlot && <Plot data={scatterPlot["data"]} layout={scatterPlot["layout"]}  />}
+        
       </div>
    );
 

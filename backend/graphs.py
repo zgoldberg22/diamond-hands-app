@@ -145,7 +145,8 @@ def plot_by_pitch_result_3d(filtered_pitches):
     fig.add_trace(strike_zone)
 
     fig.update_layout(
-        title=f'Locations for Pitches',
+        title='Locations for Pitches',
+        title_x=0.5,
         scene=dict(
             xaxis_title='x-axis (Left-Right)',
             yaxis_title='y-axis (Front-Back)',
@@ -156,8 +157,9 @@ def plot_by_pitch_result_3d(filtered_pitches):
             aspectmode='manual',
             aspectratio=dict(x=1, y=1, z=1.5),
             camera=dict(
-                eye=dict(x=-1.5, y=-1.5, z=0.5),
-                center=dict(x=0, y=0, z=0)
+                eye=dict(x=0, y=3, z=0),  # Adjusted for y-z view
+                center=dict(x=0, y=0, z=0),
+                up=dict(x=0, y=0, z=1)  # Ensure the z-axis is pointing up
             )
         ),
         height=600,
