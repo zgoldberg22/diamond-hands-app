@@ -5,7 +5,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './individual-pitch.css'
 
-import ThreeDPlot from '/src/ThreeDPlot.jsx';
+// import ThreeDPlot from '/src/ThreeDPlot.jsx';
 import FilterSystem from '../FilterSystem';
 import getBasicPitches from '../api'; 
 
@@ -122,7 +122,7 @@ export default function IndividualPitch() {
          </div>
          }
 
-         {selectedEventId && <ThreeDPlot key={selectedEventId} eventId={selectedEventId} />}
+         {/* {selectedEventId && <ThreeDPlot key={selectedEventId} eventId={selectedEventId} />} */}
       </div>
    )
 

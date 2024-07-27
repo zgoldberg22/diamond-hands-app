@@ -10,11 +10,11 @@ def get_decrypted_data(input_file):
    return data
 
 def get_basic_pitches_df():
-   data = decrypt_json("basic_pitches_encrypted.txt")
+   data = decrypt_json("basic_pitches_encrypted.bin")
    return pd.DataFrame(data)
 
 def get_ball_tracking_df():
-   data = get_decrypted_data("ball_tracking_encrypted.txt")
+   data = get_decrypted_data("ball_tracking_encrypted.bin")
    return pd.DataFrame(data)
 
 def filter_by_args(args, data): 

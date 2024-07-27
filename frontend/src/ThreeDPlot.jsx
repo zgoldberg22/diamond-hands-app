@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback} from 'react';
 import Plot from 'react-plotly.js';
-import data from "../../backend/ball_tracking.json"
+// import data from "../../backend/ball_tracking.json"
 
 const squareSize = 3; // Size of the square
         const halfSize = squareSize / 2;

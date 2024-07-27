@@ -25,7 +25,7 @@ def get_basic_pitches():
          pitches_json = filtered_pitches.to_json(orient='records')
          return jsonify(pitches_json), 200
       else: 
-         pitches = get_decrypted_data("basic_pitches_encrypted.txt")
+         pitches = get_decrypted_data("basic_pitches_encrypted.bin")
          return jsonify(pitches), 200
    except Exception as e: 
       return jsonify({"error": str(e)}), 500

@@ -7,7 +7,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import { Modal, Button } from 'react-bootstrap';
 import { InfoCircle } from 'react-bootstrap-icons';
 
-import ballTrackingData from "../../backend/ball_tracking.json"; 
+// import ballTrackingData from "../../backend/ball_tracking.json"; 
 import getBasicPitches from './api'; 
 import AllPitches from './all_pitches/AllPitches'; 
 import IndividualPitch from './individual_pitch/IndividualPitch';
