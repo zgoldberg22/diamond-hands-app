@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 # from heatmap import plot_pitch_result_heatmap
-from helpers import get_basic_pitches_json, filter_by_args, get_basic_pitches_df
+from helpers import get_decrypted_data, filter_by_args, get_basic_pitches_df
 from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_heatmap_and_scatter
+import json
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
@@ -18,15 +19,13 @@ def home():
 def get_basic_pitches():
    try: 
       args = request.args.to_dict() # gets query params 
-      print(args)
       if args:
          pitches = get_basic_pitches_df()
-         # print(pitches.keys())
          filtered_pitches = filter_by_args(args, pitches)
          pitches_json = filtered_pitches.to_json(orient='records')
          return jsonify(pitches_json), 200
       else: 
-         pitches = get_basic_pitches_json()
+         pitches = get_decrypted_data("basic_pitches_encrypted.txt")
          return jsonify(pitches), 200
    except Exception as e: 
       return jsonify({"error": str(e)}), 500

@@ -1,30 +1,21 @@
 import json
 import os
 import pandas as pd 
+import string
+import random
+from decrypt import decrypt_json
 
-def get_json(file_name):
-    root = os.path.realpath(os.path.dirname(__file__))
-    full_file_path = os.path.join(root, file_name)
-
-    data = {}
-    with open(full_file_path, 'r') as f: 
-        data = json.load(f)
-
-    return data
-
-def get_basic_pitches_json():
-    data = get_json("basic_pitches.json")
-    return data
-
-def get_ball_tracking_data():
-    data = get_json("ball_tracking.json")
-    return data
+def get_decrypted_data(input_file):
+   data = decrypt_json(input_file)
+   return data
 
 def get_basic_pitches_df():
-    return pd.DataFrame(get_basic_pitches_json())
+   data = decrypt_json("basic_pitches_encrypted.txt")
+   return pd.DataFrame(data)
 
 def get_ball_tracking_df():
-    return pd.DataFrame(get_ball_tracking_data())
+   data = get_decrypted_data("ball_tracking_encrypted.txt")
+   return pd.DataFrame(data)
 
 def filter_by_args(args, data): 
    filtered_data = data.copy()

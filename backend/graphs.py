@@ -10,7 +10,7 @@ from scipy.stats import gaussian_kde
 from flask import jsonify
 import json
 import plotly.io as pio
-from helpers import get_json, get_basic_pitches_df, get_ball_tracking_df, filter_by_args
+from helpers import get_basic_pitches_df, get_ball_tracking_df, filter_by_args
 
 # Access the parsed dataframes
 basic_pitches = get_basic_pitches_df()
@@ -82,13 +82,13 @@ def plot_pitch_result_heatmap(filtered_pitches, pos_x, pos_z):
 
     layout = {
         "title": f'Pitch Location Heatmap',
-        "xaxis":dict(title='Left-Right', range=[-2, 2], dtick=0.5),
+        "xaxis":dict(title='Left-Right', range=[2, -2], dtick=0.5),
         "yaxis":dict(title='Up-Down', range=[1, 4], dtick=0.5),
         "shapes":[
             # Add strike zone rectangle
             dict(
                 type="rect",
-                x0=-0.7083, x1=0.7083,
+                x0=-.7083, x1=0.7083,
                 y0=1.5, y1=3.5,
                 line=dict(color="Black"),
                 fillcolor="rgba(0,0,0,0)",
@@ -140,7 +140,7 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
             aspectmode='manual',
             aspectratio=dict(x=1, y=1, z=1.5),
             camera=dict(
-                eye=dict(x=0, y=-3, z=0.25),  # Adjusted for y-z view
+                eye=dict(x=.5, y=3, z=0.5),  # Adjusted for y-z view
                 center=dict(x=0, y=0, z=0),
                 up=dict(x=0, y=0, z=1)  # Ensure the z-axis is pointing up
             )

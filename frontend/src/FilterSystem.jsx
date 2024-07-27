@@ -127,7 +127,7 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => 
                <ToggleButton id="strikeCalled" value="Called" variant="secondary" onChange={(e) => updateFilter('action', e.target.value)}>
                   Called
                </ToggleButton>
-               <ToggleButton id="strikeCalled" value="Swing" variant="secondary" onChange={(e) => updateFilter('swing', true)}>
+               <ToggleButton id="strikeSwing" value="Swing" variant="secondary" onChange={(e) => updateFilter('swing', true)}>
                   Swing
                </ToggleButton>
             </ToggleButtonGroup>
