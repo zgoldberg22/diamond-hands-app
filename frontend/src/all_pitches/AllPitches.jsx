@@ -4,7 +4,6 @@ import {useState, useRef, useEffect, useCallback} from 'react';
 import './all-pitches.css';
 
 import FilterSystem from '../FilterSystem';
-import PitchResultPlot from '../PitchScatterPlot';
 import PitchHeatMap from "../PitchHeatMap";
 import PitchScatterPlot from '../PitchScatterPlot';
 import {getAllPitchGraphs} from '../api';
@@ -12,8 +11,6 @@ import BaseballLoader from './BaseballLoader';
 
 export default function AllPitches() {
    const [basicPitchesData, setBasicPitchesData] = useState([]); 
-   // const [ballTrackingData, setBallTrackingData] = useState([]); 
-   // const [allPitchData, setAllPitchData] = useState([]); 
    const [filters, setFilters] = useState({
       games: "",
       result: "", //Strike, Ball or HitIntoPlay
@@ -47,7 +44,7 @@ export default function AllPitches() {
    }, []);
 
    useEffect(() => {
-      console.log(filters); 
+      // console.log(filters); 
       async function fetchData() {
          const resData = await getAllPitchGraphs(filters); 
          setScatterPlotData(resData["scatter_plot"]);

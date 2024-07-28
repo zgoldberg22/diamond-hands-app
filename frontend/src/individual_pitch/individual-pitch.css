@@ -1,3 +1,54 @@
 .individual-pitch {
    width: 100%; 
 }
+
+.graphs {
+   margin-top: 40px; 
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap: 15px;
+   align-items: center;
+   justify-content: space-between;
+}
+
+.actual {
+   background-color: rgb(220, 220, 220);
+   border-radius: 5px;
+   padding: 10px;
+}
+
+.predicted {
+   background-color: rgb(239, 248, 255);
+   border-radius: 5px;
+   padding: 10px;
+}
+
+.ball-slider {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap: 15px;
+}
+
+.bat-speed-slider {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap: 15px;
+}
+
+.predicted-measures {
+   margin: 5px; 
+   border: 2px;
+   border-color: rgb(0,0,0);
+}
+
+.ballRange {
+   width: 250px; 
+}
+
+.bat-speed {
+   width: 250px; 
+}
+

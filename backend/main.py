@@ -2,13 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 # from heatmap import plot_pitch_result_heatmap
 from helpers import get_decrypted_data, filter_by_args, get_basic_pitches_df
-from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_heatmap_and_scatter
+from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_heatmap_and_scatter, single_pitch_plots
 import json
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 @app.route("/")
+@cross_origin()
 def home(): 
    return "DIAMOND HANDS"
 
@@ -38,24 +39,33 @@ def get_all_pitch_graphs():
 
    return jsonify(all_graphs), 200
 
-# @app.route("/hit_into_plays")
-# @cross_origin()
-# def get_all_pitch_graphs(): 
-#    # args = request.args.to_dict()
-#    all_graphs = get_heatmap_and_scatter(args)
+@app.route("/plot_prediction", methods=["GET"])
+@cross_origin()
+def get_plot_prediction(): 
+   args = request.args.to_dict()
+   if args:
+      updated_args = {}
+      for key, value in args.items(): 
+         if value: 
+            updated_value = value.strip('"') if '"' in value else value
+            if key in ['change_in_bat_speed', 'change_in_z']: 
+               updated_value = float(updated_value)
+            updated_args[key] = updated_value
 
-#    return jsonify(all_graphs), 200
+      print(updated_args)
+      if len(updated_args) == 1:
+         graph_data = single_pitch_plots(hiteventId=updated_args['hiteventId'])
+      else:
+         graph_data = single_pitch_plots(hiteventId=updated_args['hiteventId'], change_in_z=updated_args["change_in_z"], change_in_bat_speed=updated_args["change_in_bat_speed"])
+   else: 
+      return jsonify({}), 204
+
+   response = jsonify(graph_data)
+   response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+
+   return jsonify(graph_data), 200
 
 
-# @app.route("/heatmap")
-# @cross_origin()
-# def get_heatmap(): 
-#    # data = request.get_json() # get json that is passed in the body of the request
-#    args = request.args.to_dict() #converts body to dictionary
-#    print(args)
-#    heatmap = plot_pitch_result_heatmap(args)
-
-#    return jsonify(heatmap), 200 # created successfully 
 
 # @app.route("/pitch_scatter_plot")
 # @cross_origin()

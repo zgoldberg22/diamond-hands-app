@@ -10,7 +10,9 @@ from scipy.stats import gaussian_kde
 from flask import jsonify
 import json
 import plotly.io as pio
-from helpers import get_basic_pitches_df, get_ball_tracking_df, filter_by_args
+import pickle
+from helpers import get_basic_pitches_df, get_ball_tracking_df, filter_by_args, get_json
+from plot_prediction_with_param import plot_contact_pred
 
 # Access the parsed dataframes
 basic_pitches = get_basic_pitches_df()
@@ -148,9 +150,50 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
         height=600,
         width=600
     )
+     # Add reference plane for strike zone
+    strike_zone_outline = go.Scatter3d(
+        x=[-.7083, .7083, .7083, -.7083, -.7083],  # Added the last point to close the shape
+        y=[-3, -3, -3, -3, -3],  # Place it at y=-3
+        z=[1.5, 1.5, 3.6, 3.6, 1.5],
+        mode='lines',
+        line=dict(color='black', width=4),
+        name='Strike Zone Outline',
+        showlegend=False  # Remove legend for strike zone outline
+    )
+    fig.add_trace(strike_zone_outline)  
 
-    data = fig['data']
-    layout = fig['layout']
+    inch_to_foot = 1/12
+    thickness = 1/12
+
+    home_plate = go.Mesh3d(
+        # Define the points of the 3D home plate (flipped)
+        x=[-8.5*inch_to_foot, 8.5*inch_to_foot, 8.5*inch_to_foot, 0, -8.5*inch_to_foot,
+        -8.5*inch_to_foot, 8.5*inch_to_foot, 8.5*inch_to_foot, 0, -8.5*inch_to_foot],
+        y=[17*inch_to_foot, 17*inch_to_foot, 8.5*inch_to_foot, 0, 8.5*inch_to_foot,
+        17*inch_to_foot, 17*inch_to_foot, 8.5*inch_to_foot, 0, 8.5*inch_to_foot],
+        z=[0, 0, 0, 0, 0,
+        thickness, thickness, thickness, thickness, thickness],
+        i=[0, 0, 0, 5, 5, 5, 0, 1, 2, 3],
+        j=[1, 2, 3, 6, 7, 8, 5, 6, 7, 8],
+        k=[2, 3, 4, 7, 8, 9, 1, 2, 3, 4],
+        opacity=1,
+        color='white',
+        name='Home Plate',
+        showlegend=False,  # Remove legend for home plate
+        lighting=dict(
+            ambient=1,
+            diffuse=0,
+            specular=0,
+            roughness=1,
+            fresnel=0
+        ),
+        lightposition=dict(x=0, y=0, z=100000),
+        flatshading=True,
+    )
+    fig.add_trace(home_plate)
+
+    # data = fig['data']
+    # layout = fig['layout']
 
     # Serialize data and layout to JSON
     fig_dict = {
@@ -159,4 +202,24 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
     }
 
     # Return the JSON string
+    return fig_dict
+
+def single_pitch_plots(hiteventId, change_in_z=None, change_in_bat_speed=None): 
+    with open('la_model.pkl', 'rb') as f:
+        la_model_data = pickle.load(f)
+
+    bat_tracking = get_json("bat_tracking_hits.json")
+    hit_contact = get_json("hit_contact.json")
+    hits_data = get_json("sc_data.json")
+
+    print(change_in_z)
+    print(change_in_bat_speed)
+
+    fig = plot_contact_pred(hiteventId, bat_tracking, hit_contact, la_model_data, hits_data, ev_model=None, change_in_z=change_in_z, bat_angle=None, change_in_bat_speed=change_in_bat_speed)
+
+    fig_dict = {
+        'data': [trace.to_plotly_json() for trace in fig.data], 
+        'layout': fig.layout.to_plotly_json() 
+    }
+
     return fig_dict

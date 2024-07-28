@@ -4,36 +4,21 @@ import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './individual-pitch.css'
+import {Form, Button} from 'react-bootstrap';
 
 // import ThreeDPlot from '/src/ThreeDPlot.jsx';
 import FilterSystem from '../FilterSystem';
-import getBasicPitches from '../api'; 
+import {getContactPlot} from '../api'; 
+import getBasicPitches from '../api';  
+import ContactPlot from './ContactPlot';
 
 const columns = [
-   { field: 'gameid', headerName: 'Game ID', width: 150 },
-   { field: 'pitcheventId', headerName: 'Pitch ID', width: 150 },
-   { field: 'result', headerName: 'Result', width: 150 },
-   // { field: 'action', headerName: 'Action', width: 150 },
-   // { field: 'pitchtype', headerName: 'Pitch Type', width: 150 },
-   { field: 'pitchspeed_mph', headerName: 'Pitch Speed (mph)', width: 150 },
-   // { field: 'pitchspeed_kph', headerName: 'Pitch Speed (kph)', width: 150 },
-   // { field: 'pitchspeed_mps', headerName: 'Pitch Speed (mps)', width: 150 },
-   { field: 'pitchspin_rpm', headerName: 'Pitch Spin (rpm)', width: 150 },
-   { field: 'hitspeed_mph', headerName: 'Hit Speed (mph)', width: 150 },
-   // { field: 'hitspeed_kph', headerName: 'Hit Speed (kph)', width: 150 },
-   // { field: 'hitspeed_mps', headerName: 'Hit Speed (mps)', width: 150 },
-   { field: 'hitspin_rpm', headerName: 'Hit Spin (rpm)', width: 150 },
-   // { field: 'team1', headerName: 'Team 1', width: 150 },
-   // { field: 'team2', headerName: 'Team 2', width: 150 },
-   // { field: 'runsinnings', headerName: 'Runs Innings', width: 150 },
-   { field: 'runsplay', headerName: 'Runs Play', width: 150 },
-   { field: 'outsinning', headerName: 'Outs Inning', width: 150 },
-   { field: 'outsplay', headerName: 'Outs Play', width: 150},
-   { field: 'ballsplateAppearance', headerName: 'Balls Plate Appearance', width: 150 },
-   { field: 'ballsplay', headerName: 'Balls Play', width: 150 },
-   { field: 'strikesplateAppearance', headerName: 'Strikes Plate Appearance', width: 150 },
-   { field: 'strikesplay', headerName: 'Strikes Play', width: 150 },
-   { field: 'hiteventId', headerName: 'Hit Event ID', width: 150 }
+   { field: 'hiteventId', headerName: 'Hit Event ID', width: 'auto' },
+   { field: 'result', headerName: 'Result', width: 'auto' },
+   { field: 'pitchspeed_mph', headerName: 'Pitch Speed (mph)', width: 'auto' },
+   { field: 'pitchspin_rpm', headerName: 'Pitch Spin (rpm)', width: 'auto' },
+   { field: 'hitspeed_mph', headerName: 'Hit Speed (mph)', width: 'auto' },
+   { field: 'hitspin_rpm', headerName: 'Hit Spin (rpm)', width: 'auto' }
  ];
 
  const defaultColDef = {
@@ -41,40 +26,30 @@ const columns = [
    resizable: true
  };
 
- const games = [
-   {id: "12345641"}, 
-   {id: "12345645"},
-   {id: "12345636"},
-   {id: "12345634"},
- ]; 
-
 export default function IndividualPitch() {
    const [selectedEventId, setSelectedEventId] = useState(null);
    const gridRef = useRef(null);
    const [hitIntoPlays, setHitIntoPlays] = useState([]); 
-   const [allPitchData, setAllPitchData] = useState([]); 
-   // const [filteredData, setFilteredData] = useState([]); 
-   const [filters, setFilters] = useState({
-      games: [],
-      pitchTypes: [],
-      selectedStrikes: null,
-      selectedBalls: null,
-      pitchSpeed: 100.00,
-      outsInning: null,
-      outsPlay: null,
-      result: null
-    });  
+   const [zChange, setZChange] = useState(0);
+   const [batSpeed, setBatSpeed] = useState(0);
+   const [plotData, setPlotData] = useState({}); 
+   const [predictedData, setPredictedData] = useState(null); 
+
+  const handleChange = (event) => {
+   console.log(event.target.value)
+    setZChange(parseFloat(event.target.value));
+  };
 
     useEffect(() => {
       async function fetchData() {
         const resData = await getBasicPitches(); 
         let filtered = resData.filter(row => row.result === "HitIntoPlay"); 
         setHitIntoPlays(filtered); 
-      //   setFilteredData(resData); 
       }  
   
       fetchData(); 
     }, []); 
+
 
    // useEffect(() => {
    //    setAllPitchData(pitchesData); 
@@ -84,15 +59,38 @@ export default function IndividualPitch() {
 
 
    const onSelectionChanged = useCallback(() => {
+      async function fetchData(args) {
+         const resData = await getContactPlot(args); 
+         setPlotData(resData); 
+         setPredictedData(resData); 
+       }  
+      
       const selectedRows = gridRef.current.api.getSelectedRows();
       if (selectedRows.length > 0) {
-        const eventId = selectedRows[0].pitcheventId;
+        const eventId = selectedRows[0].hiteventId;
         console.log(eventId)
         setSelectedEventId(eventId);
+        fetchData({"hiteventId": eventId}); 
+        setBatSpeed(0); 
+        setZChange(0); 
       } else {
         setSelectedEventId(null);
       }
     }, []);
+
+    const handlePredictSubmit = () => {
+      async function fetchData(args) {
+         const resData = await getContactPlot(args); 
+         setPredictedData(resData); 
+     }  
+
+      fetchData({
+         "hiteventId": selectedEventId, 
+         "change_in_bat_speed": batSpeed, 
+         "change_in_z": zChange
+      }); 
+   }
+    
 
 
    return (
@@ -123,6 +121,69 @@ export default function IndividualPitch() {
          }
 
          {/* {selectedEventId && <ThreeDPlot key={selectedEventId} eventId={selectedEventId} />} */}
+
+         {/* Change the prediction parameters */}
+
+         {selectedEventId && 
+         <div className="graphs">
+            <div className="actual">
+               <h4>
+                  At Contact Point:
+               </h4>
+               <p> 
+                  Actual Hit Speed: 
+
+               </p>
+               {/* plot based on selected hitEventId */}
+               <ContactPlot plotData={plotData || {}} />
+            </div>
+
+            <div className="predicted">
+               <h4>
+                  At Contact Point:
+               </h4>
+               <p>
+                  Change the values below to predict the launch angle: 
+               </p>
+               <Form.Group className="predicted-measures">
+                  <Form.Group className="ball-slider">
+                     <Form.Label>Z-Position of Ball: {zChange.toFixed(3)}</Form.Label>
+                     <Form.Range
+                        className="ballRange"
+                        min={-0.1}
+                        max={0.1}
+                        step={0.001}
+                        value={zChange}
+                        onChange={handleChange}
+                     />
+                  </Form.Group>
+
+                  <Form.Group className="bat-speed-slider">
+                     <Form.Label>Bat Speed: {batSpeed.toFixed(3)}</Form.Label>
+                     <Form.Range
+                        className="bat-speed"
+                        min={-20}
+                        max={20}
+                        step={0.5}
+                        value={batSpeed}
+                        onChange={(e) => setBatSpeed(parseFloat(e.target.value))}
+                     />
+                  </Form.Group>
+                  <Button variant="secondary" type="submit" onClick={handlePredictSubmit}>
+                     Predict Launch Angle
+                  </Button>
+
+               </Form.Group>
+              
+               {predictedData && <ContactPlot plotData={predictedData || {}} />}
+            </div>
+
+            {/* Plot to predict */}
+
+         </div> 
+       } 
+
+         
       </div>
    )
 

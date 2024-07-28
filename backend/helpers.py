@@ -5,6 +5,18 @@ import string
 import random
 from decrypt import decrypt_json
 
+def get_json(file_name):
+    root = os.path.realpath(os.path.dirname(__file__))
+    full_file_path = os.path.join(root, file_name)
+
+    data = {}
+    with open(full_file_path, 'r') as f: 
+        data = json.load(f)
+
+    data_df = pd.DataFrame(data)
+
+    return data_df
+
 def get_decrypted_data(input_file):
    data = decrypt_json(input_file)
    return data

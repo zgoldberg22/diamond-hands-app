@@ -1,7 +1,9 @@
 export default async function getBasicPitches() {
    let api_url = 'http://127.0.0.1:5000/basic_pitches'
 
-   let res = fetch(api_url)
+   let res = fetch(api_url, {
+      mode: 'cors',
+   })
     .then(response => response.json())
     .then(data => {
       // console.log(data)
@@ -13,14 +15,15 @@ export default async function getBasicPitches() {
 }
 
 
-
 export async function getHeatmapData(filters) {
    let api_url = buildApiUrl(filters, 'http://127.0.0.1:5000/heatmap'); 
    // console.log(filters)
    // console.log(api_url); 
 
    // api_url = result === "" ? api_url : `${api_url}?result=${result}`
-   const response = fetch(api_url)
+   const response = fetch(api_url, {
+      mode: 'cors',
+   })
       .then(response => response.json())
       .then(data => {
       // console.log(data)
@@ -32,9 +35,11 @@ export async function getHeatmapData(filters) {
 
 export async function getAllPitchGraphs(filters) {
    let api_url = buildApiUrl(filters, 'http://127.0.0.1:5000/all_pitch_graphs'); 
-   console.log(api_url); 
+   // console.log(api_url); 
 
-   const response = fetch(api_url)
+   const response = fetch(api_url, {
+      mode: 'cors',
+   })
       .then(response => response.json())
       .then(data => {
       // console.log(data)
@@ -48,7 +53,9 @@ export async function getPitchScatterPlot(filters) {
    let api_url = buildApiUrl(filters, 'http://127.0.0.1:5000/pitch_scatter_plot'); 
 
    // api_url = result === "" ? api_url : `${api_url}?result=${result}`
-   const response = fetch(api_url)
+   const response = fetch(api_url, {
+      mode: 'cors',
+   })
       .then(response => response.json())
       .then(data => {
       // console.log(data)
@@ -57,6 +64,24 @@ export async function getPitchScatterPlot(filters) {
    
    return response; 
 }
+
+export async function getContactPlot(args) {
+   let api_url = buildApiUrl(args, 'http://127.0.0.1:5000/plot_prediction'); 
+   // const api_url = 'http://127.0.0.1:5000/plot_prediction'; 
+
+   // api_url = result === "" ? api_url : `${api_url}?result=${result}`
+   const response = fetch(api_url, {
+      mode: 'cors',
+   })
+      .then(response => response.json())
+      .then(data => {
+      // console.log(data)
+      return data; 
+   });
+   
+   return response; 
+}
+
 
 function buildApiUrl(filters, api_url) {
    let api_url_build = api_url;
