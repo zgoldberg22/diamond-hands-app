@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Plot from 'react-plotly.js';
-import { getContactPlot } from '../api';
 
 const ContactPlot = ({plotData}) => {
    

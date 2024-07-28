@@ -1,16 +1,14 @@
 import * as React from 'react';
 import {useState, useRef, useEffect, useCallback} from 'react'; 
-// import '../filter-system.css'; 
 import './all-pitches.css';
 
-import FilterSystem from '../FilterSystem';
-import PitchHeatMap from "../PitchHeatMap";
+import FilterSystem from './FilterSystem';
+import PitchHeatMap from "./PitchHeatMap";
 import PitchScatterPlot from '../PitchScatterPlot';
 import {getAllPitchGraphs} from '../api';
 import BaseballLoader from '../BaseballLoader';
 
 export default function AllPitches() {
-   const [basicPitchesData, setBasicPitchesData] = useState([]); 
    const [filters, setFilters] = useState({
       games: "",
       result: "", //Strike, Ball or HitIntoPlay
@@ -65,7 +63,7 @@ export default function AllPitches() {
                   <strong>Analyze All Pitches</strong>
                </h2>
                <p>Description about how any why...</p>
-            <FilterSystem gridRef={null} setBasicPitchesData={setBasicPitchesData} data={[]} setAppFilters={setFilters} />
+            <FilterSystem setAppFilters={setFilters} />
             <div className="graphs">
                <PitchHeatMap 
                   heatmapData={heatmapData} 

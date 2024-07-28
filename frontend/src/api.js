@@ -6,27 +6,21 @@ export default async function getBasicPitches() {
    })
     .then(response => response.json())
     .then(data => {
-      // console.log(data)
       return data; 
    });
-   // const response = await fetch("/basic_pitches"); 
-   // const data = await response.json()
+
    return res; 
 }
 
 
 export async function getHeatmapData(filters) {
    let api_url = buildApiUrl(filters, 'http://127.0.0.1:5000/heatmap'); 
-   // console.log(filters)
-   // console.log(api_url); 
 
-   // api_url = result === "" ? api_url : `${api_url}?result=${result}`
    const response = fetch(api_url, {
       mode: 'cors',
    })
       .then(response => response.json())
       .then(data => {
-      // console.log(data)
       return data; 
    });
    
@@ -42,7 +36,6 @@ export async function getAllPitchGraphs(filters) {
    })
       .then(response => response.json())
       .then(data => {
-      // console.log(data)
       return data; 
    });
    
@@ -52,13 +45,11 @@ export async function getAllPitchGraphs(filters) {
 export async function getPitchScatterPlot(filters) {
    let api_url = buildApiUrl(filters, 'http://127.0.0.1:5000/pitch_scatter_plot'); 
 
-   // api_url = result === "" ? api_url : `${api_url}?result=${result}`
    const response = fetch(api_url, {
       mode: 'cors',
    })
       .then(response => response.json())
       .then(data => {
-      // console.log(data)
       return data; 
    });
    
@@ -73,7 +64,6 @@ export async function getContactPlot(args) {
    })
       .then(response => response.json())
       .then(data => {
-      // console.log(data)
       return data; 
    });
    

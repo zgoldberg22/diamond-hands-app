@@ -3,8 +3,8 @@ import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './individual-pitch.css'
-import {Form, Button, ListGroup, OverlayTrigger, Tooltip, Modal} from 'react-bootstrap';
-import {FaArrowCircleDown, FaInfoCircle} from 'react-icons/fa'; 
+import {Form, Button, ListGroup, OverlayTrigger, Tooltip, Modal, Spinner} from 'react-bootstrap';
+import {FaArrowDown, FaInfoCircle} from 'react-icons/fa'; 
 
 import {getContactPlot} from '../api'; 
 import {getAllHits} from '../api';  
@@ -112,8 +112,12 @@ export default function IndividualPitch() {
             </h2>
             {selectedEventId &&
                <Button variant="success"> 
-                  <FaArrowCircleDown onClick={scrollToGraph}
-                  style={{display: 'inline'}} /> 
+                  {(isLoading && plotData && predictedData ) ? 
+                     <Spinner size="sm" />
+                  :
+                     <FaArrowDown onClick={scrollToGraph} style={{display: 'inline'}} />
+                  }
+                  
                </Button> 
             }
         
@@ -151,8 +155,6 @@ export default function IndividualPitch() {
                <h2>
                   <strong>Contact Quality Analysis of Hit</strong>
                </h2>
-               
-                     
             </div> 
          }
 

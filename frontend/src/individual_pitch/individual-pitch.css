@@ -21,7 +21,7 @@
 }
 
 .actual-values {
-   margin-bottom: 210px;
+   margin-bottom: 205px;
 }
 
 .actual-values .list-group-item {
@@ -31,7 +31,7 @@
 .predicted {
    border: 5px solid rgb(237, 237, 237); 
    border-radius: 5px;
-   padding: 7px;
+   padding: 10px;
 }
 
 .contact-heading {

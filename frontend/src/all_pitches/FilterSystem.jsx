@@ -20,7 +20,7 @@ const personByTeam = {
 }
 const allPersonIds = ["", 360906992, 719146721, 485007791, 451871192, 223971350, 459722179, 290569727, 558675411, 172804761, 432216743, 474808052, 545569723, 765710437, 654287703, 568527038, 590082479, 412098649, 797957728, 805688901, 174158975, 849653732, 352830460, 618024297, 854238128, 617522563, 505414610, 518481551, 686425745, 719210239, 797796542, 563942271]
 
-const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => {
+const FilterSystem = ({ setAppFilters }) => {
   const [filters, setFilters] = useState({
    gameid: "",
    result: "", //Strike, Ball or HitIntoPlay
@@ -45,32 +45,9 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => 
    }
   };
 
-  const filterData = (allData) => {
-    return allData.filter(row => {
-      const gameMatch = filters.gameid === "" || filters.gameid === row.gameid;
-      const resultMatch = filters.result === "" || filters.result === row.result;
-      const actionMatch = filters.action === "" || filters.action === row.action; 
-      const swingMatch = filters.action == (row.hiteventId !== null); 
-      const outsPlayMatch = filters.outsplay === "" || filters.outsplay === row.outsplay;
-      
-      return gameMatch && resultMatch && actionMatch && swingMatch && outsPlayMatch;
-    });
-  };
-
-  //can possibly delete this? 
   useEffect(() => {
-    const filteredData = filterData(data);
-
-    setBasicPitchesData(filteredData); 
     setAppFilters(filters); 
   }, [filters]);
-
-  useEffect(() => {
-   const filteredData = filterData(data);
-
-   setBasicPitchesData(filteredData); 
-   setAppFilters(filters); 
- }, [filters.teamId]);
 
   const resetFilters = () => {
     setFilters({
@@ -88,28 +65,26 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => 
 
   return (
     <div className="filter-system">
-      {/* <h3>Filters</h3> */}
       <Form className='filter-row'>
          <Form.Group className="filter-item">
-         <FloatingLabel label="Select a Game" id="gameSelect">
-            <Form.Control as="select" onChange={(e) => updateFilter('gameid', e.target.value)} value={filters.gameid}>
-               {games.map(game => (
-                  <option key={game.id} value={game.value}>{game.id}</option>
-               ))}
-            </Form.Control>
-         </FloatingLabel>
+            <FloatingLabel label="Select a Game" id="gameSelect">
+               <Form.Control as="select" onChange={(e) => updateFilter('gameid', e.target.value)} value={filters.gameid}>
+                  {games.map(game => (
+                     <option key={game.id} value={game.value}>{game.id}</option>
+                  ))}
+               </Form.Control>
+            </FloatingLabel>
          </Form.Group>
 
          <Form.Group className='filter-item'>
-         {/* <Form.Label htmlFor="result">Result:</Form.Label> */}
-         <FloatingLabel label="Hit Result">
-            <Form.Control as="select" name="result" id="result" onChange={(e) => updateFilter('result', e.target.value)} value={filters.result}>
-               <option value="">All Pitches</option>
-               <option value="HitIntoPlay">Hit Into Play</option>
-               <option value="Strike">Strike</option>
-               <option value="Ball">Ball</option>
-            </Form.Control>
-         </FloatingLabel>
+            <FloatingLabel label="Hit Result">
+               <Form.Control as="select" name="result" id="result" onChange={(e) => updateFilter('result', e.target.value)} value={filters.result}>
+                  <option value="">All Pitches</option>
+                  <option value="HitIntoPlay">Hit Into Play</option>
+                  <option value="Strike">Strike</option>
+                  <option value="Ball">Ball</option>
+               </Form.Control>
+            </FloatingLabel>
          </Form.Group>
 
          {filters.result === "Strike" && (
@@ -132,7 +107,6 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => 
             </ToggleButtonGroup>
          )}
 
-
          {filters.result === "HitIntoPlay" && (
             <Form.Group className="hitsFilters">
                <ToggleButtonGroup className="hits-button-group" type="radio" name="options" defaultValue="">
@@ -145,8 +119,8 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => 
                   <ToggleButton id="noOuts" value="0" variant="secondary" onChange={(e) => updateFilter('outsplay', 0)}>
                      No Out
                   </ToggleButton>
-                  
                </ToggleButtonGroup>
+
                <FloatingLabel label="Select Team">
                   <Form.Control className="teamSelect" as="select" value={filters.teamId} onChange={(e) => updateFilter('teamId', e.target.value)}>
                      {teamIds.map(team => (
@@ -173,7 +147,7 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => 
             <Button className="resetBtn" variant="secondary" onClick={resetFilters}><ArrowCounterclockwise /></Button>
          </OverlayTrigger>
       
-    </Form>
+      </Form>
     </div>
   );
 };
