@@ -17,7 +17,7 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
         'differential_x', 'differential_y', 'differential_z',
         'bat_vel_at_contact_x', 'bat_vel_at_contact_y', 'bat_vel_at_contact_z',
         'distance_from_handle', 'bat_speed_at_contact', 
-        'angle_from_z'#, 'distance_from_handle'
+        'angle_from_z'
     ]
 
     fig = go.Figure()
@@ -33,8 +33,6 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
         
         # Convert the angle from radians to degrees
         bat_angle = math.degrees(angle_radians)
-    #else:
-        #bat_vel_z = hit_contact['bat_speed_at_contact'] * math.sin(math.radians(bat_angle))
 
     if change_in_z is not None:
         new_bat['differential_z'].iloc[0] = new_bat['differential_z'].iloc[0] + change_in_z
@@ -205,8 +203,6 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
         width=575
     )
 
-    # return fig
-
     fig_dict = {
         'data': [trace.to_plotly_json() for trace in fig.data], 
         'layout': fig.layout.to_plotly_json(),
@@ -223,31 +219,3 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
     }
 
     return fig_dict
-
-    
-    
-
-
-
-
-# def get_json(file_name):
-#     root = os.path.realpath(os.path.dirname(__file__))
-#     full_file_path = os.path.join(root, file_name)
-
-#     data = {}
-#     with open(full_file_path, 'r') as f: 
-#         data = json.load(f)
-
-#     data_df = pd.DataFrame(data)
-
-#     return data_df
-
-
-# with open('la_model.pkl', 'rb') as f:
-#     la_model_data = pickle.load(f)
-
-# bat_tracking = get_json("bat_tracking_hits.json")
-# hit_contact = get_json("hit_contact.json")
-# hits_data = get_json("sc_data.json")
-
-# plot_contact_pred('3cf58297-bb6f-4ba4-973a-56b849926fcb', bat_tracking, hit_contact, la_model_data, hits_data, ev_model=None, change_in_z=None, bat_angle=None, change_in_bat_speed=None)

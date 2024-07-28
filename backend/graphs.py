@@ -4,12 +4,9 @@ from mpl_toolkits.mplot3d import Axes3D
 from tabulate import tabulate
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
-import plotly.graph_objects as go
 import numpy as np
 from scipy.stats import gaussian_kde
-from flask import jsonify
 import json
-import plotly.io as pio
 import pickle
 from helpers import get_basic_pitches_df, get_ball_tracking_df, filter_by_args, get_json, unpickle, decrypted_data_to_df, get_decrypted_data
 from plot_prediction_with_param import plot_contact_pred
@@ -58,7 +55,7 @@ def get_heatmap_and_scatter(args):
         if filtered_pitches.empty:
             return {}
 
-     # Merge the DataFrames on pitcheventId and eventId
+    # Merge the DataFrames on pitcheventId and eventId
     merged_df = pd.merge(filtered_pitches, ball_tracking, left_on='pitcheventId', right_on='eventId')   
     closest_points = merged_df.groupby('pitcheventId').apply(first_occurence_closest_to_zero)
 
@@ -205,9 +202,6 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
     )
     fig.add_trace(home_plate)
 
-    # data = fig['data']
-    # layout = fig['layout']
-
     # Serialize data and layout to JSON
     fig_dict = {
         'data': [trace.to_plotly_json() for trace in fig.data],
@@ -219,15 +213,5 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
 
 def single_pitch_plots(hiteventId, change_in_z=None, change_in_bat_speed=None): 
     fig_dict = plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z,change_in_bat_speed)
-
-    # fig_dict = {
-    #     'data': [trace.to_plotly_json() for trace in fig.data], 
-    #     'layout': fig.layout.to_plotly_json() 
-    # }
-
-    # fig_dict = {
-    #     'data': fig["data"], 
-    #     'layout': fig.layout.to_plotly_json() 
-    # }
 
     return fig_dict

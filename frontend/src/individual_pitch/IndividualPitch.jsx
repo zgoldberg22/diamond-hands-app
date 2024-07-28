@@ -156,7 +156,7 @@ export default function IndividualPitch() {
                   <strong>Contact Quality Analysis of Hit</strong>
                </h2>
             </div> 
-         }
+          } 
 
          {selectedEventId && isLoading ? <BaseballLoader /> : (
             <div className="graphs">

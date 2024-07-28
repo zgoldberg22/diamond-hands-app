@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
-# from heatmap import plot_pitch_result_heatmap
 from helpers import get_decrypted_data, filter_by_args, get_basic_pitches_df
 from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_heatmap_and_scatter, single_pitch_plots, get_hit_contact
 import json
@@ -42,8 +41,6 @@ def get_all_pitch_graphs():
 @app.route("/all_hits", methods=["GET"])
 @cross_origin()
 def get_all_hits(): 
-   # args = request.args.to_dict()
-
    all_hits = get_hit_contact()
 
    return jsonify(all_hits), 200
@@ -61,7 +58,6 @@ def get_plot_prediction():
                updated_value = float(updated_value)
             updated_args[key] = updated_value
 
-      print(updated_args)
       if len(updated_args) == 1:
          graph_data = single_pitch_plots(hiteventId=updated_args['hiteventId'])
       else:
@@ -73,18 +69,6 @@ def get_plot_prediction():
    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
 
    return jsonify(graph_data), 200
-
-
-
-# @app.route("/pitch_scatter_plot")
-# @cross_origin()
-# def get_pitch_scatter_plot(): 
-#    # data = request.get_json() # get json that is passed in the body of the request
-#    args = request.args.to_dict() #converts body to dictionary
-#    # print(args)
-#    plot = plot_by_pitch_result_3d(args)
-
-#    return jsonify(plot), 200 # created successfully 
 
 ## IMPORTANT - Anything that is being returned from a Flask app function needs to return a Json serializable object (jsonify() function does this), but some types, like numpy arrays, are not serializable
 if __name__ == "__main__":

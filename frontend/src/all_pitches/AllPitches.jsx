@@ -4,7 +4,7 @@ import './all-pitches.css';
 
 import FilterSystem from './FilterSystem';
 import PitchHeatMap from "./PitchHeatMap";
-import PitchScatterPlot from '../PitchScatterPlot';
+import PitchScatterPlot from './PitchScatterPlot';
 import {getAllPitchGraphs} from '../api';
 import BaseballLoader from '../BaseballLoader';
 
