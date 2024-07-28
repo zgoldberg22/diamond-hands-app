@@ -37,6 +37,7 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
         bat_plane = og_bat_plane + change_in_bat_plane
 
     if change_in_z is not None:
+        new_bat['differential_z'].iloc[0] = new_bat['differential_z'].iloc[0] + change_in_z
         new_bat['bat_pos_at_contact_x'].iloc[0] += change_in_z
         new_bat['bat_pos_at_contact_y'].iloc[0] += change_in_z
         new_bat['bat_pos_at_contact_z'].iloc[0] += change_in_z
