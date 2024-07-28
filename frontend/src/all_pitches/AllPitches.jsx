@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState, useRef, useEffect, useCallback} from 'react'; 
+import {useState, useEffect} from 'react'; 
 import './all-pitches.css';
 
 import FilterSystem from './FilterSystem';
@@ -19,8 +19,10 @@ export default function AllPitches() {
       playerId: "",
      });
 
-   const [scatterPlotData, setScatterPlotData] = useState({}); 
-   const [heatmapData, setHeatmapData] = useState({}); 
+   // const [scatterPlotData, setScatterPlotData] = useState({}); 
+   // const [heatmapData, setHeatmapData] = useState({}); 
+   // const [trajData, setTrajData] = useState({}); 
+   const [graphData, setGraphData] = useState({})
    const [isLoading, setIsLoading] = useState(true);
 
    useEffect(() => {
@@ -28,8 +30,10 @@ export default function AllPitches() {
          setIsLoading(true); 
          try {
             const resData = await getAllPitchGraphs(""); 
-            setScatterPlotData(resData["scatter_plot"]);
-            setHeatmapData(resData["heatmap"]);  
+            setGraphData(resData); 
+            // setScatterPlotData(resData["strike_zone_scatter"]);
+            // setHeatmapData(resData["heatmap"]); 
+            // setTrajData(resData["pitch_trajectories"]) 
          } catch (error) {
             console.error("Error fetching initial data:", error);
          } finally {
@@ -44,8 +48,7 @@ export default function AllPitches() {
    useEffect(() => {
       async function fetchData() {
          const resData = await getAllPitchGraphs(filters); 
-         setScatterPlotData(resData["scatter_plot"]);
-         setHeatmapData(resData["heatmap"]);  
+         setGraphData(resData);
       }
 
       fetchData(); 
@@ -54,7 +57,7 @@ export default function AllPitches() {
 
    return (
       <div>
-        {isLoading ? (
+        {isLoading && graphData ? (
          <BaseballLoader />
         ) : (
          <div>
@@ -66,12 +69,16 @@ export default function AllPitches() {
             <FilterSystem setAppFilters={setFilters} />
             <div className="graphs">
                <PitchHeatMap 
-                  heatmapData={heatmapData} 
+                  heatmapData={graphData["heatmap"]} 
                /> 
          
                <PitchScatterPlot 
-                  scatterPlot={scatterPlotData}
+                  scatterPlot={graphData["strike_zone_scatter"]}
                />
+            </div>
+
+            <div style={{marginTop: '10px'}}>
+               <PitchScatterPlot scatterPlot={graphData["pitch_trajectories"]} />
             </div>
          </div>
         )

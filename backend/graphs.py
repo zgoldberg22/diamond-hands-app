@@ -48,7 +48,27 @@ def first_occurence_closest_to_zero(group):
     
     return closest_row
 
-def get_heatmap_and_scatter(args):
+
+def single_pitch_plots(hiteventId, change_in_z=None, change_in_bat_speed=None, change_in_bat_plane=None): 
+    fig_dict_contact = plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+
+    fig_dict_speed_vs_angle = plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+
+    fig_dict_launch_speed_dist = plot_launch_speed_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+
+    fig_dict_launch_angle = plot_launch_angle_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+
+    # print(fig_dict_launch_speed_dist)
+
+    return {
+        "contactPoint": fig_dict_contact,
+        "speedVsAngle": fig_dict_speed_vs_angle, 
+        "launchSpeedDist": fig_dict_launch_speed_dist,
+        "launchAngleDist": fig_dict_launch_angle
+    }
+
+
+def get_graphs_all_pitches(args):
     filtered_pitches = basic_pitches
     if args: 
         filtered_pitches = filter_by_args(args, basic_pitches)
@@ -65,10 +85,15 @@ def get_heatmap_and_scatter(args):
     pos_z = closest_points['pos_z']
 
     heatmap = plot_pitch_result_heatmap(filtered_pitches, pos_x, pos_z)
-    scatter_plot = plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z)
+    strike_zone_scatter = plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z)
+    pitch_trajectories = plot_pitch_trajectories(filtered_pitches)
 
     # return heatmap and scatter_plot data
-    return {"heatmap": heatmap, "scatter_plot": scatter_plot}
+    return {
+        "heatmap": heatmap, 
+        "strike_zone_scatter": strike_zone_scatter, 
+        "pitch_trajectories": pitch_trajectories
+    }
 
 def plot_pitch_result_heatmap(filtered_pitches, pos_x, pos_z):
     # Create a grid of points
@@ -128,16 +153,16 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
     )
     fig.add_trace(scatter)
 
-    # Add reference plane for strike zone
-    strike_zone = go.Mesh3d(
-        x=[-0.7083, 0.7083, 0.7083, -0.7083],
-        y=[0, 0, 0, 0],
-        z=[1.5, 1.5, 3.5, 3.5],
-        opacity=0.2,
-        color='red',
-        name='Strike Zone'
-    )
-    fig.add_trace(strike_zone)
+    # # Add reference plane for strike zone
+    # strike_zone = go.Mesh3d(
+    #     x=[-0.7083, 0.7083, 0.7083, -0.7083],
+    #     y=[0, 0, 0, 0],
+    #     z=[1.5, 1.5, 3.5, 3.5],
+    #     opacity=0.2,
+    #     color='black',
+    #     name='Strike Zone'
+    # )
+    # fig.add_trace(strike_zone)
 
     fig.update_layout(
         title='Locations for Pitches',
@@ -166,9 +191,9 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
         y=[-.5, -.5, -.5, -.5, -.5],  # Place it at y=-3
         z=[1.5, 1.5, 3.6, 3.6, 1.5],
         mode='lines',
-        line=dict(color='black', width=4),
+        line=dict(color='red', width=4),
         name='Strike Zone Outline',
-        showlegend=False  # Remove legend for strike zone outline
+        showlegend=True  # Remove legend for strike zone outline
     )
     fig.add_trace(strike_zone_outline)
 
@@ -211,24 +236,159 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
     # Return the JSON string
     return fig_dict
 
-# def plot_pitch_trajectories(filtered_pitches):
+def first_occurence_closest_to_one(group):
+    sorted_group = group[group['vel_y'] < 0].sort_values('time')
+    minimum_dist = abs(sorted_group.iloc[0]['pos_y'])
+    closest_row = sorted_group.iloc[0]
+    
+    for _, row in sorted_group.iterrows():
+        current_dist = abs(row['pos_y'] - 1.4)
+        if current_dist < minimum_dist:
+            minimum_dist = current_dist
+            closest_row = row
+        elif current_dist > minimum_dist:
+            break
+    
+    return closest_row
 
+    sorted_group = group.sort_values('time')
 
-def single_pitch_plots(hiteventId, change_in_z=None, change_in_bat_speed=None, change_in_bat_plane=None): 
-    fig_dict_contact = plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+def plot_pitch_trajectories(filtered_pitches):
+    filtered_df = pd.merge(filtered_pitches, ball_tracking, left_on=['pitcheventId'], right_on=['eventId'])
 
-    fig_dict_speed_vs_angle = plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+    # Create figure
+    fig = make_subplots(rows=1, cols=1, specs=[[{'type': 'scene'}]])
 
-    fig_dict_launch_speed_dist = plot_launch_speed_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+    for pitch_id, pitch_data in filtered_df.groupby('pitcheventId'):
+        end_point = first_occurence_closest_to_one(pitch_data)
+        pitch_data = pitch_data[pitch_data['time'] <= end_point['time']]
+        
+        # Add condition to filter out pitches based on z and x values
+        if (pitch_data['pos_z'] > 7).any() or (pitch_data['pos_x'] < -4).any() or (pitch_data['pos_x'] > 4).any():
+            continue  # Skip this pitch
+        
+    # Determine color based on pitchspin_rpm
+        if (pitch_data['pitchspin_rpm'] > 2200).any():
+            color = 'orange'
+        else:
+            color = 'blue'
+        
+        fig.add_trace(go.Scatter3d(
+            x=pitch_data['pos_x'].tolist(), y=pitch_data['pos_y'].tolist(), z=pitch_data['pos_z'].tolist(),
+            mode='lines',
+            line=dict(color=color, width=4),
+            showlegend=False
+        ))
+        
+        fig.add_trace(go.Scatter3d(
+            x=[end_point['pos_x']], y=[end_point['pos_y']], z=[end_point['pos_z']],
+            mode='markers',
+            marker=dict(color='black', size=5),
+            showlegend=False
+        ))
 
-    fig_dict_launch_angle = plot_launch_angle_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+    # Add strike zone
+    strike_zone = np.array([[-0.71, 0, 1.5], [0.71, 0, 1.5], [0.71, 0, 3.5], [-0.71, 0, 3.5], [-0.71, 0, 1.5]])
+    fig.add_trace(go.Scatter3d(
+        x=strike_zone[:, 0].tolist(), y=strike_zone[:, 1].tolist(), z=strike_zone[:, 2].tolist(),
+        mode='lines',
+        line=dict(color='red', width=6),
+        showlegend=False
+    ))
 
-    # print(fig_dict_launch_speed_dist)
+    # Infield
+    infield_diamond = np.array([
+        [0, 0, 0],           # Home plate
+        [90, 90, 0],         # First base
+        [0, 127.28, 0],      # Second base
+        [-90, 90, 0],        # Third base
+        [0, 0, 0]            # Back to home plate to close the shape
+    ])
 
-    return {
-        "contactPoint": fig_dict_contact,
-        "speedVsAngle": fig_dict_speed_vs_angle, 
-        "launchSpeedDist": fig_dict_launch_speed_dist,
-        "launchAngleDist": fig_dict_launch_angle
+    fig.add_trace(go.Scatter3d(
+        x=(infield_diamond[:, 0]).tolist(), 
+        y=(infield_diamond[:, 1]).tolist(), 
+        z=(infield_diamond[:, 2]).tolist(),
+        mode='lines', line=dict(color='white', width=6), showlegend=False
+    ))
+    # Add green field
+    field_x = np.linspace(-150, 150, 50)
+    field_y = np.linspace(-10, 250, 50)
+    field_x, field_y = np.meshgrid(field_x, field_y)
+    field_z = np.zeros_like(field_x)
+
+    fig.add_trace(go.Surface(
+        x=field_x.tolist(), y=field_y.tolist(), z=field_z.tolist(),
+        colorscale=[[0, 'green'], [1, 'green']],
+        showscale=False,
+        opacity=0.3
+    ))
+    
+    # Pitcher's mound (approximate as a circle)
+    theta = np.linspace(0, 2*np.pi, 100)
+    mound_radius = 9  # feet
+    mound_x = mound_radius * np.cos(theta)
+    mound_y = 60.5 + mound_radius * np.sin(theta)  # 60.5 feet from home plate
+    fig.add_trace(go.Scatter3d(
+        x=mound_x.tolist(), y=mound_y.tolist(), z=np.zeros_like(mound_x).tolist(),
+        mode='lines', line=dict(color='white', width=6), showlegend=False
+    ))
+
+    fig.add_trace(go.Scatter3d(
+        x=[None], y=[None], z=[None],
+        mode='lines',
+        line=dict(color='orange', width=2),
+        name='Spin > 2200 RPM',
+        showlegend=True
+    ))
+    fig.add_trace(go.Scatter3d(
+        x=[None], y=[None], z=[None],
+        mode='lines',
+        line=dict(color='blue', width=2),
+        name='Spin <= 2200 RPM',
+        showlegend=True
+    ))
+    # Update layout
+    fig.update_layout(
+        scene=dict(
+            xaxis_title='X (ft)',
+            yaxis_title='Y (ft)',
+            zaxis_title='Z (ft)',
+            aspectmode='manual',
+
+            aspectratio=dict(x=2, y=2, z=0.5),  # Adjusted for better field view
+            xaxis=dict(range=[-150, 150], dtick=50, showbackground=False,
+                showgrid=False,
+                showline=False,
+                visible=False),
+            yaxis=dict(range=[-10, 250], dtick=50, showbackground=False,
+                showgrid=False,
+                showline=False,
+                visible=False),
+            zaxis=dict(range=[0, 50], dtick=10, showbackground=False,
+                showgrid=False,
+                showline=False,
+                visible=False),
+            camera=dict(
+                eye=dict(x=0, y=-1, z=-.22),  # Raised the eye position slightly on the z-axis
+                up=dict(x=0, y=-1, z=0.25),     # Adjusted the up vector for a gentler tilt
+                center=dict(x=0, y=0, z=-.2)
+            )
+        ),
+        title=f'Pitch Trajectories',
+        height=600,
+        width=1000,       
+        legend=dict(
+            yanchor="top",
+            y=0.99,
+            xanchor="left",
+            x=0.01
+        )
+    )
+
+    fig_dict = {
+        'data': [trace.to_plotly_json() for trace in fig.data],
+        'layout': fig.layout.to_plotly_json()
     }
 
+    return fig_dict

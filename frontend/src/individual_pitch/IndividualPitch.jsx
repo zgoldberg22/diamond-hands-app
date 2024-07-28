@@ -29,15 +29,12 @@ export default function IndividualPitch() {
    const [selectedEventId, setSelectedEventId] = useState(null);
    const gridRef = useRef(null);
    const [hitIntoPlays, setHitIntoPlays] = useState([]); 
-   // const changeBatPlane
    const [params, setParams] = useState({
       hiteventId: selectedEventId, 
       change_in_bat_speed: 0, 
       change_in_z: 0, 
       change_in_bat_plane: 0
    }); 
-   // const [zChange, setZChange] = useState(0);
-   // const [batSpeed, setBatSpeed] = useState(0);
    const [plotData, setPlotData] = useState(null); 
    const [predictedData, setPredictedData] = useState(null); 
    const [isLoading, setIsLoading] = useState(true);
@@ -203,7 +200,7 @@ export default function IndividualPitch() {
 
             {predictedData &&
                <div className="predicted">
-                  <h4>
+                  <h4 style={{paddingBottom: "10px"}}>
                      <strong>Predicted Values</strong>
                   </h4>
                   

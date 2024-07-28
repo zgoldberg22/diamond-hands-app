@@ -2,6 +2,6 @@
    display: flex;
    flex-direction: row;
    flex-wrap: wrap;
-   gap: 15px;
+   gap: 5px;
    align-items: flex-start;
 }

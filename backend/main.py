@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from helpers import get_decrypted_data, filter_by_args, get_basic_pitches_df
-from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_heatmap_and_scatter, single_pitch_plots, get_hit_contact
+from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_graphs_all_pitches, single_pitch_plots, get_hit_contact
 import json
 
 app = Flask(__name__)
@@ -34,7 +34,7 @@ def get_basic_pitches():
 @cross_origin()
 def get_all_pitch_graphs(): 
    args = request.args.to_dict()
-   all_graphs = get_heatmap_and_scatter(args)
+   all_graphs = get_graphs_all_pitches(args)
 
    return jsonify(all_graphs), 200
 
