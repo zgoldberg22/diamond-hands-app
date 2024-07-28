@@ -54,14 +54,14 @@ def get_plot_prediction():
       for key, value in args.items(): 
          if value: 
             updated_value = value.strip('"') if '"' in value else value
-            if key in ['change_in_bat_speed', 'change_in_z']: 
+            if key in ['change_in_bat_speed', 'change_in_z','change_in_bat_plane']: 
                updated_value = float(updated_value)
             updated_args[key] = updated_value
 
       if len(updated_args) == 1:
          graph_data = single_pitch_plots(hiteventId=updated_args['hiteventId'])
       else:
-         graph_data = single_pitch_plots(hiteventId=updated_args['hiteventId'], change_in_z=updated_args["change_in_z"], change_in_bat_speed=updated_args["change_in_bat_speed"])
+         graph_data = single_pitch_plots(hiteventId=updated_args['hiteventId'], change_in_z=updated_args["change_in_z"], change_in_bat_speed=updated_args["change_in_bat_speed"], change_in_bat_plane=updated_args["change_in_bat_plane"])
    else: 
       return jsonify({}), 204
 

@@ -27,14 +27,12 @@ export default function App() {
         </Button>
       </div>
       
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>About the Data</Modal.Title>
         </Modal.Header>
         <Modal.Body> Add description about our project and the data here? ... </Modal.Body>
       </Modal>
-
-      <br />
       
       <div className="gridAndFilters">
         <Tabs
@@ -44,10 +42,10 @@ export default function App() {
           variant='pills'
           justify
         >
-          <Tab eventKey="allGames" title="All Games/Overall">
+          <Tab eventKey="allGames" title="All Pitches Analysis">
             <AllPitches />
           </Tab>
-          <Tab eventKey="pitch" title="Individual Pitch">
+          <Tab eventKey="pitch" title="Contact Point Analysis">
             <IndividualPitch />
           </Tab>
         </Tabs>

@@ -9,7 +9,7 @@ from scipy.stats import gaussian_kde
 import json
 import pickle
 from helpers import get_basic_pitches_df, get_ball_tracking_df, filter_by_args, get_json, unpickle, decrypted_data_to_df, get_decrypted_data
-from plot_prediction_with_param import plot_contact_pred
+from plot_prediction_with_param import plot_contact_pred, plot_launch_speed_vs_angle, plot_launch_speed_distribution, plot_launch_angle_distribution
 
 # Access the parsed dataframes
 basic_pitches = get_basic_pitches_df()
@@ -211,7 +211,24 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
     # Return the JSON string
     return fig_dict
 
-def single_pitch_plots(hiteventId, change_in_z=None, change_in_bat_speed=None): 
-    fig_dict = plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z,change_in_bat_speed)
+# def plot_pitch_trajectories(filtered_pitches):
 
-    return fig_dict
+
+def single_pitch_plots(hiteventId, change_in_z=None, change_in_bat_speed=None, change_in_bat_plane=None): 
+    fig_dict_contact = plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+
+    fig_dict_speed_vs_angle = plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+
+    fig_dict_launch_speed_dist = plot_launch_speed_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+
+    fig_dict_launch_angle = plot_launch_angle_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+
+    # print(fig_dict_launch_speed_dist)
+
+    return {
+        "contactPoint": fig_dict_contact,
+        "speedVsAngle": fig_dict_speed_vs_angle, 
+        "launchSpeedDist": fig_dict_launch_speed_dist,
+        "launchAngleDist": fig_dict_launch_angle
+    }
+
