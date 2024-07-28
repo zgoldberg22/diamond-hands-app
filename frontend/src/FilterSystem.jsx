@@ -88,7 +88,6 @@ const FilterSystem = ({ gridRef, setBasicPitchesData, data, setAppFilters }) => 
 
   return (
     <div className="filter-system">
-      <br />
       {/* <h3>Filters</h3> */}
       <Form className='filter-row'>
          <Form.Group className="filter-item">

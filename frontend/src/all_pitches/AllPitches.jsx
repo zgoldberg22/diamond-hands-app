@@ -7,7 +7,7 @@ import FilterSystem from '../FilterSystem';
 import PitchHeatMap from "../PitchHeatMap";
 import PitchScatterPlot from '../PitchScatterPlot';
 import {getAllPitchGraphs} from '../api';
-import BaseballLoader from './BaseballLoader';
+import BaseballLoader from '../BaseballLoader';
 
 export default function AllPitches() {
    const [basicPitchesData, setBasicPitchesData] = useState([]); 
@@ -44,7 +44,6 @@ export default function AllPitches() {
    }, []);
 
    useEffect(() => {
-      // console.log(filters); 
       async function fetchData() {
          const resData = await getAllPitchGraphs(filters); 
          setScatterPlotData(resData["scatter_plot"]);
@@ -57,11 +56,15 @@ export default function AllPitches() {
 
    return (
       <div>
-        
         {isLoading ? (
          <BaseballLoader />
         ) : (
          <div>
+            <br/>
+               <h2>
+                  <strong>Analyze All Pitches</strong>
+               </h2>
+               <p>Description about how any why...</p>
             <FilterSystem gridRef={null} setBasicPitchesData={setBasicPitchesData} data={[]} setAppFilters={setFilters} />
             <div className="graphs">
                <PitchHeatMap 
@@ -75,7 +78,6 @@ export default function AllPitches() {
          </div>
         )
       }  
-
       </div>
    )
 }

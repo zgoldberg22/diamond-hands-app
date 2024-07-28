@@ -166,24 +166,24 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
      # Add reference plane for strike zone
     strike_zone_outline = go.Scatter3d(
         x=[-.7083, .7083, .7083, -.7083, -.7083],  # Added the last point to close the shape
-        y=[-3, -3, -3, -3, -3],  # Place it at y=-3
+        y=[-.5, -.5, -.5, -.5, -.5],  # Place it at y=-3
         z=[1.5, 1.5, 3.6, 3.6, 1.5],
         mode='lines',
         line=dict(color='black', width=4),
-        name='Strike Zone',
-        showlegend=True  # Remove legend for strike zone outline
+        name='Strike Zone Outline',
+        showlegend=False  # Remove legend for strike zone outline
     )
-    fig.add_trace(strike_zone_outline)  
+    fig.add_trace(strike_zone_outline)
 
     inch_to_foot = 1/12
     thickness = 1/12
 
     home_plate = go.Mesh3d(
-        # Define the points of the 3D home plate (flipped)
+        # Define the points of the 3D home plate (shifted back 17 inches on y-axis)
         x=[-8.5*inch_to_foot, 8.5*inch_to_foot, 8.5*inch_to_foot, 0, -8.5*inch_to_foot,
         -8.5*inch_to_foot, 8.5*inch_to_foot, 8.5*inch_to_foot, 0, -8.5*inch_to_foot],
-        y=[17*inch_to_foot, 17*inch_to_foot, 8.5*inch_to_foot, 0, 8.5*inch_to_foot,
-        17*inch_to_foot, 17*inch_to_foot, 8.5*inch_to_foot, 0, 8.5*inch_to_foot],
+        y=[0, 0, -8.5*inch_to_foot, -17*inch_to_foot, -8.5*inch_to_foot,
+        0, 0, -8.5*inch_to_foot, -17*inch_to_foot, -8.5*inch_to_foot],
         z=[0, 0, 0, 0, 0,
         thickness, thickness, thickness, thickness, thickness],
         i=[0, 0, 0, 5, 5, 5, 0, 1, 2, 3],

@@ -2,6 +2,7 @@
    width: 100%; 
 }
 
+
 .graphs {
    margin-top: 20px; 
    display: flex;
@@ -17,8 +18,12 @@
    border: 2px solid rgb(237, 237, 237); 
    border-radius: 5px;
    padding: 10px;
-   padding-bottom: 175px;
 }
+
+.actual-values {
+   margin-bottom: 210px;
+}
+
 .actual-values .list-group-item {
    background-color: rgb(253, 253, 253);
 }
@@ -27,6 +32,15 @@
    border: 5px solid rgb(237, 237, 237); 
    border-radius: 5px;
    padding: 7px;
+}
+
+.contact-heading {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap: 7px;
+   align-items: center;
+   justify-content: left;
 }
 
 .ball-slider {

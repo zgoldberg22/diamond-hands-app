@@ -6,43 +6,20 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import { Modal, Button } from 'react-bootstrap';
 import { InfoCircle } from 'react-bootstrap-icons';
-
-// import ballTrackingData from "../../backend/ball_tracking.json"; 
-import getBasicPitches from './api'; 
 import AllPitches from './all_pitches/AllPitches'; 
 import IndividualPitch from './individual_pitch/IndividualPitch';
 
-const games = [
-  {id: "4a2da1a0-f7ac-48f4-9e87-b6dd1d867bfb"}, 
-  {id: "cc0c12f1-54f4-4325-a97f-009d86ee1359"},
-  {id: "88638515-1fa8-497a-bbea-2a85b9926e10"},
-  {id: "89a50db1-aa4e-47cc-9c65-083aed19d845"},
-]
-
 export default function App() {
-  const [basicPitchesData, setBasicPitchesData] = useState([]); 
-  const [filteredData, setFilteredData] = useState([]); 
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     const resData = await getBasicPitches(); 
-  //     setBasicPitchesData(resData); 
-  //     setFilteredData(resData); 
-  //   }  
-
-  //   fetchData(); 
-  // }, []); 
-
 
   return (
     <div className="app">
       <div className="header">
         <h1>
-          Diamond Hands Dashboard
+          <strong>Diamond Hands Stats</strong>
         </h1>
         <Button variant="secondary" onClick={handleShow} className="icon-button">
           <InfoCircle className="icon" size={20} />
@@ -50,7 +27,6 @@ export default function App() {
         </Button>
       </div>
       
-
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>About the Data</Modal.Title>
@@ -72,7 +48,7 @@ export default function App() {
             <AllPitches />
           </Tab>
           <Tab eventKey="pitch" title="Individual Pitch">
-            <IndividualPitch pitchesData={basicPitchesData} />
+            <IndividualPitch />
           </Tab>
         </Tabs>
 
