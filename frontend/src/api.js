@@ -67,15 +67,27 @@ export async function getPitchScatterPlot(filters) {
 
 export async function getContactPlot(args) {
    let api_url = buildApiUrl(args, 'http://127.0.0.1:5000/plot_prediction'); 
-   // const api_url = 'http://127.0.0.1:5000/plot_prediction'; 
 
-   // api_url = result === "" ? api_url : `${api_url}?result=${result}`
    const response = fetch(api_url, {
       mode: 'cors',
    })
       .then(response => response.json())
       .then(data => {
       // console.log(data)
+      return data; 
+   });
+   
+   return response; 
+}
+
+export async function getAllHits() {
+   let api_url = 'http://127.0.0.1:5000/all_hits'; 
+
+   const response = fetch(api_url, {
+      mode: 'cors',
+   })
+      .then(response => response.json())
+      .then(data => {
       return data; 
    });
    

@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 # from heatmap import plot_pitch_result_heatmap
 from helpers import get_decrypted_data, filter_by_args, get_basic_pitches_df
-from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_heatmap_and_scatter, single_pitch_plots
+from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_heatmap_and_scatter, single_pitch_plots, get_hit_contact
 import json
 
 app = Flask(__name__)
@@ -38,6 +38,15 @@ def get_all_pitch_graphs():
    all_graphs = get_heatmap_and_scatter(args)
 
    return jsonify(all_graphs), 200
+
+@app.route("/all_hits", methods=["GET"])
+@cross_origin()
+def get_all_hits(): 
+   # args = request.args.to_dict()
+
+   all_hits = get_hit_contact()
+
+   return jsonify(all_hits), 200
 
 @app.route("/plot_prediction", methods=["GET"])
 @cross_origin()

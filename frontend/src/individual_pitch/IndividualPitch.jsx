@@ -4,12 +4,12 @@ import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './individual-pitch.css'
-import {Form, Button} from 'react-bootstrap';
+import {Form, Button, ListGroup} from 'react-bootstrap';
 
 // import ThreeDPlot from '/src/ThreeDPlot.jsx';
 import FilterSystem from '../FilterSystem';
 import {getContactPlot} from '../api'; 
-import getBasicPitches from '../api';  
+import {getAllHits} from '../api';  
 import ContactPlot from './ContactPlot';
 
 const columns = [
@@ -32,7 +32,7 @@ export default function IndividualPitch() {
    const [hitIntoPlays, setHitIntoPlays] = useState([]); 
    const [zChange, setZChange] = useState(0);
    const [batSpeed, setBatSpeed] = useState(0);
-   const [plotData, setPlotData] = useState({}); 
+   const [plotData, setPlotData] = useState(null); 
    const [predictedData, setPredictedData] = useState(null); 
 
   const handleChange = (event) => {
@@ -42,33 +42,25 @@ export default function IndividualPitch() {
 
     useEffect(() => {
       async function fetchData() {
-        const resData = await getBasicPitches(); 
-        let filtered = resData.filter(row => row.result === "HitIntoPlay"); 
-        setHitIntoPlays(filtered); 
+        const resData = await getAllHits(); 
+      //   let filtered = resData.filter(row => row.result === "HitIntoPlay"); 
+        setHitIntoPlays(resData); 
       }  
   
       fetchData(); 
     }, []); 
-
-
-   // useEffect(() => {
-   //    setAllPitchData(pitchesData); 
-   //    let filteredData = pitchesData.filter(row => row.result === "HitIntoPlay")
-   //    setHitIntoPlays(filteredData); 
-   // }, [pitchesData]);
-
 
    const onSelectionChanged = useCallback(() => {
       async function fetchData(args) {
          const resData = await getContactPlot(args); 
          setPlotData(resData); 
          setPredictedData(resData); 
+         console.log(resData)
        }  
       
       const selectedRows = gridRef.current.api.getSelectedRows();
       if (selectedRows.length > 0) {
         const eventId = selectedRows[0].hiteventId;
-        console.log(eventId)
         setSelectedEventId(eventId);
         fetchData({"hiteventId": eventId}); 
         setBatSpeed(0); 
@@ -90,8 +82,6 @@ export default function IndividualPitch() {
          "change_in_z": zChange
       }); 
    }
-    
-
 
    return (
       <div className="individual-pitch">
@@ -99,8 +89,9 @@ export default function IndividualPitch() {
          <br/>
 
          <h2>
-            Select a Pitch to Analyze
+            <strong>Select a Pitch to Analyze</strong>
          </h2>
+         <p></p>
         
          {hitIntoPlays && 
          <div className="ag-theme-quartz" style={{ height: 600, width: '100%' }}>
@@ -110,9 +101,7 @@ export default function IndividualPitch() {
                columnDefs={columns}
                pagination={true}
                defaultColDef={{
-                  ...defaultColDef, 
-                  // filter: true, 
-                  // floatingFilter: true
+                  ...defaultColDef
                }}
                rowSelection="single"  
                onSelectionChanged={onSelectionChanged}
@@ -120,31 +109,63 @@ export default function IndividualPitch() {
          </div>
          }
 
-         {/* {selectedEventId && <ThreeDPlot key={selectedEventId} eventId={selectedEventId} />} */}
+         <br/>
+
+         {selectedEventId &&
+            <div>
+               <h2>
+                  <strong>Contact Quality Analysis of Hit</strong>
+               </h2>
+
+            </div> 
+         }
 
          {/* Change the prediction parameters */}
-
-         {selectedEventId && 
          <div className="graphs">
+         {selectedEventId && plotData &&
             <div className="actual">
-               <h4>
-                  At Contact Point:
+               <h4 style={{paddingBottom: "10px"}}>
+                  <strong>True Values</strong>
                </h4>
-               <p> 
-                  Actual Hit Speed: 
-
-               </p>
+               <ListGroup className="actual-values">
+                  <ListGroup.Item>True Hit Speed: {plotData["label"]["Actual Hit Speed"]}</ListGroup.Item>
+                  <ListGroup.Item>True Vertical Exit Angle: {plotData["label"]["Actual Vertical Exit Angle"]}</ListGroup.Item>
+                  <ListGroup.Item>Horizontal Exit Angle: {plotData["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
+                  <ListGroup.Item>Old Hit Probability: {plotData["label"]["Old Hit Probability"]}</ListGroup.Item>
+                  <ListGroup.Item>Outs on Play: {plotData["label"]["Outs on Play"]}</ListGroup.Item>
+               </ListGroup>
+               <p></p>
+               {/* <p></p>
+               <p>True Vertical Exit Angle: {plotData["label"]["Actual Vertical Exit Angle"]}</p>
+               <p>Horizontal Exit Angle: {plotData["label"]["Horizontal Exit Angle"]}</p>
+               <p>Old Hit Probability: {plotData["label"]["Old Hit Probability"]}</p>
+               <p>Outs on Play: {plotData["label"]["Outs on Play"]}</p> */}
                {/* plot based on selected hitEventId */}
                <ContactPlot plotData={plotData || {}} />
-            </div>
 
+               <hr></hr>
+            </div>
+         }
+
+         {selectedEventId && predictedData &&
             <div className="predicted">
-               <h4>
-                  At Contact Point:
+               <h4 style={{paddingBottom: "10px"}}>
+                  <strong>Predicted Values</strong>
                </h4>
-               <p>
-                  Change the values below to predict the launch angle: 
-               </p>
+               <ListGroup>
+                  <ListGroup.Item>Predicted Hit Speed: {predictedData["label"]["Predicted Hit Speed"]}</ListGroup.Item>
+                  <ListGroup.Item>Predicted Vertical Exit Angle: {predictedData["label"]["Predicted Vertical Exit Angle"]}</ListGroup.Item>
+                  <ListGroup.Item>Horizontal Exit Angle: {predictedData["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
+                  <ListGroup.Item>Old Hit Probability: {plotData["label"]["Old Hit Probability"]}</ListGroup.Item>
+                  <ListGroup.Item>Outs on Play: {plotData["label"]["Outs on Play"]}</ListGroup.Item>
+               </ListGroup>
+               <p></p>
+              
+               <ContactPlot plotData={predictedData || {}} />
+
+               <hr></hr>
+
+               <p><strong>Change Values to Predict Results: </strong></p>
                <Form.Group className="predicted-measures">
                   <Form.Group className="ball-slider">
                      <Form.Label>Z-Position of Ball: {zChange.toFixed(3)}</Form.Label>
@@ -174,14 +195,13 @@ export default function IndividualPitch() {
                   </Button>
 
                </Form.Group>
-              
-               {predictedData && <ContactPlot plotData={predictedData || {}} />}
             </div>
+         }
 
             {/* Plot to predict */}
 
-         </div> 
-       } 
+       {/* }  */}
+       </div> 
 
          
       </div>

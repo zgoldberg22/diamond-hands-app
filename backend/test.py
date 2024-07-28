@@ -55,34 +55,6 @@ key = Fernet.generate_key()
 # salt = Fernet.generate_key()[:16]
 
 
-def encrypt_json_file(input_file, output_file, password):
-    # Generate a salt
-    
-    # Generate a key from the password and salt
-   #  key = generate_key(password, salt)
-    
-    # Create a Fernet instance
-    fernet = Fernet(password)
-    
-    # Read the JSON file
-    with open(input_file, 'rb') as file:
-      #   data = json.load(file)
-      data = file.read()
-    
-
-    # Convert JSON to string and encode
-    json_bytes = data
-    
-    # Encrypt the data
-    encrypted_data = fernet.encrypt(json_bytes)
-    
-    # Combine salt and encrypted data
-   #  final_data = salt + encrypted_data
-    
-    # Write the encrypted data to the output file
-    with open(output_file, 'wb') as file:
-        file.write(encrypted_data)
-
 def generate_key(password, salt):
     """Generate a key from a password and salt."""
     kdf = PBKDF2HMAC(
@@ -123,6 +95,8 @@ def decrypt_json(input_file, password, salt):
 # b'IUxWHq-9Vjoml0gXgL1tgxsWDANvGJO0THfxI-a82S4='
 # encrypt_json_file("ball_tracking.json", "encrypted_data.txt", key)
 
+# encrypt_json_file("hit_contact.json", "hit_contact_encrypt.bin", key)
+# encrypt_json_file("bat_tracking_hits.json", "bat_tracking_hits_encrypt.bin", key)
 
 # key = generate_key("DIAMOND_HANDS")
 password = os.getenv("ENCRYPT_PASSWORD")
@@ -130,19 +104,20 @@ password = os.getenv("ENCRYPT_PASSWORD")
 salt = os.getenv("ENCRYPT_SALT")
 salt_in_bytes = salt.encode('utf-8')
 
-# encrypt_json("ball_tracking.json", "ball_tracking_encrypted.txt", password, salt_in_bytes)
-
-# encrypt_json("basic_pitches.json", "basic_pitches_encrypted.txt", password, salt_in_bytes)
+# encrypt_json("hit_contact.json", "hit_contact_encrypt.bin", password, salt_in_bytes)
+# encrypt_json("bat_tracking_hits.json", "bat_tracking_hits_encrypt.bin", password, salt_in_bytes)
 
 # decrypted_data = decrypt_json("ball_tracking_encrypted.txt", password, salt_in_bytes)
 
-decrypted_data = decrypt_json("basic_pitches_encrypted.txt", password, salt_in_bytes)
+decrypted_data = decrypt_json("hit_contact_encrypt.bin", password, salt_in_bytes)
 
-if decrypted_data: 
-   print(decrypted_data[:20])
-   print(type(decrypted_data))
-else:
-   print("No data")
+print(decrypted_data)
+
+# if decrypted_data: 
+#    print(decrypted_data[:20])
+#    print(type(decrypted_data))
+# else:
+#    print("No data")
 
 # key = base64.urlsafe_b64encode("b'fsHfD9wRnkyiRbyVBu3r5ut5gXA0UG7HXjtI3JUDiug='")
 

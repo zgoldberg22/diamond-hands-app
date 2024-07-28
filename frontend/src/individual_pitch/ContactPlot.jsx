@@ -5,9 +5,9 @@ import { getContactPlot } from '../api';
 const ContactPlot = ({plotData}) => {
    // const [plotData, setPlotData] = useState({}); 
 
-   useEffect(() => {
-    console.log(plotData) 
-  }, [plotData]); 
+//    useEffect(() => {
+//     console.log(plotData) 
+//   }, [plotData]); 
    
    return (
       <div>

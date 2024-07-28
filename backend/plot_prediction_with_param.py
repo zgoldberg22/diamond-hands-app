@@ -6,43 +6,72 @@ import sklearn
 import pickle
 import os
 import json
+import plotly.io as pio
 
-def plot_contact_pred(hiteventId, bat_tracking, hit_contact, la_model, sc_hit_preds, ev_model=None, change_in_z=None, bat_angle=None, change_in_bat_speed=None, bat_radius=0.219816 / 2, ball_radius=0.242782 / 2):
-    # Define radii
+def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z=None, bat_plane=None, change_in_bat_speed=None, bat_radius=0.219816 / 2, ball_radius=0.242782 / 2):
+    # Calculate new params for the model based on adjusted (or not adjusted) params
+    la_cols = ['differential_z', 'bat_vel_at_contact_z']
+    ev_cols = [
+        'ball_pos_at_contact_x', 'ball_pos_at_contact_y', 'ball_pos_at_contact_z',
+        'bat_pos_at_contact_x', 'bat_pos_at_contact_y', 'bat_pos_at_contact_z',
+        'differential_x', 'differential_y', 'differential_z',
+        'bat_vel_at_contact_x', 'bat_vel_at_contact_y', 'bat_vel_at_contact_z',
+        'distance_from_handle', 'bat_speed_at_contact', 
+        'angle_from_z'#, 'distance_from_handle'
+    ]
+
     fig = go.Figure()
 
     # Filter for the specific hiteventId
     one_bat = bat_tracking[bat_tracking['hiteventId'] == hiteventId]
     new_bat = hit_contact[hit_contact['hiteventId'] == hiteventId]
 
-    if bat_angle is None:
+    if bat_plane is None:
         tan=new_bat['bat_vel_at_contact_x'].iloc[0] / new_bat['bat_vel_at_contact_y'].iloc[0]
         angle_radians = math.atan(tan)
+        bat_plane = math.degrees(angle_radians)
         
         # Convert the angle from radians to degrees
         bat_angle = math.degrees(angle_radians)
     #else:
         #bat_vel_z = hit_contact['bat_speed_at_contact'] * math.sin(math.radians(bat_angle))
 
-    if change_in_z is None:
-        diff_z = new_bat['differential_z'].iloc[0]
-    else:
-        diff_z = new_bat['differential_z'].iloc[0] + change_in_z
+    if change_in_z is not None:
+        new_bat['differential_z'].iloc[0] = new_bat['differential_z'].iloc[0] + change_in_z
+        new_bat['bat_pos_at_contact_x'].iloc[0] = new_bat['bat_pos_at_contact_x'].iloc[0] + change_in_z
+        new_bat['bat_pos_at_contact_y'].iloc[0] = new_bat['bat_pos_at_contact_y'].iloc[0] + change_in_z
+        new_bat['bat_pos_at_contact_z'].iloc[0] = new_bat['bat_pos_at_contact_z'].iloc[0] + change_in_z
+        new_bat['bat_head_at_contact_x'].iloc[0] = new_bat['bat_head_at_contact_x'].iloc[0] + change_in_z
+        new_bat['bat_head_at_contact_y'].iloc[0] = new_bat['bat_head_at_contact_y'].iloc[0] + change_in_z
+        new_bat['bat_head_at_contact_z'].iloc[0] = new_bat['bat_head_at_contact_z'].iloc[0] + change_in_z
+        new_bat['bat_handle_at_contact_x'].iloc[0] = new_bat['bat_handle_at_contact_x'].iloc[0] + change_in_z
+        new_bat['bat_handle_at_contact_y'].iloc[0] = new_bat['bat_handle_at_contact_y'].iloc[0] + change_in_z
+        new_bat['bat_handle_at_contact_z'].iloc[0] = new_bat['bat_handle_at_contact_z'].iloc[0] + change_in_z
 
-    if change_in_bat_speed is None:
-        bat_speed = new_bat['bat_speed_at_contact'].iloc[0]
-        bat_vel_z = new_bat['bat_vel_at_contact_z'].iloc[0]
+    if change_in_bat_speed is not None:
+        new_bat['bat_speed_at_contact'].iloc[0] = new_bat['bat_speed_at_contact'].iloc[0] + change_in_bat_speed
+        new_bat['bat_vel_at_contact_z'].iloc[0] = new_bat['bat_speed_at_contact'].iloc[0] * math.sin(math.radians(bat_plane))
+    if ev_model is None:
+        pred_vel = new_bat['hitspeed_mph'].iloc[0]
     else:
-        bat_speed = new_bat['bat_speed_at_contact'].iloc[0] + change_in_bat_speed
-        bat_vel_z = bat_speed * math.sin(math.radians(bat_angle))
+        X_new = new_bat[ev_cols]
+        X_new_scaled = ev_scaler_X.transform(X_new)
+        y_new_scaled = ev_model.predict(X_new_scaled)
+        pred_vel = ev_scaler_y.inverse_transform(y_new_scaled.reshape(-1, 1)).flatten()[0]
     
-    #if ev_model is None:
-    pred_vel = new_bat['hitspeed_mph'].iloc[0]
+    if la_model is not None:
+        X_new = new_bat[la_cols]
+        X_new_scaled = la_scaler_X.transform(X_new)
+        y_new_scaled = la_model.predict(X_new_scaled).flatten()
+        pred_angle = la_scaler_y.inverse_transform(y_new_scaled.reshape(-1, 1)).flatten()[0]
+    else:
+        pred_angle = new_bat['hitangle2'].iloc[0]
 
-    pred_angle = la_model.predict([[diff_z, bat_vel_z]])[0]
+    same_specs_pred = sc_hit_preds[(sc_hit_preds['launch_speed'].round() == pred_vel.round()) & (sc_hit_preds['launch_angle'] == pred_angle.round())]
+    hit_prob_pred = 1 - same_specs_pred['out'].mean()
 
-    same_specs = sc_hit_preds[(sc_hit_preds['launch_speed'].round() == pred_vel.round()) & (sc_hit_preds['launch_angle'] == pred_angle.round())]
-    hit_prob = 1 - same_specs['out'].mean()
+    same_specs_orig = sc_hit_preds[(sc_hit_preds['launch_speed'].round() == new_bat['hitspeed_mph'].iloc[0].round()) & (sc_hit_preds['launch_angle'] == new_bat['hitangle2'].iloc[0].round())]
+    hit_prob_orig = 1 - same_specs_orig['out'].mean()
 
     # Extract the contact time
     contact_time = new_bat['collision_time'].iloc[0]
@@ -122,22 +151,53 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, la_model, sc_hit_pr
         marker=dict(size=1, color='orange'),
         name='Ball Exit Vector'
     ))
-    annotation_text = f"Predicted Hit Speed: {hitspeed:.2f} mph<br>Horizontal Exit Angle: {hitangle1:.2f}°<br>Predicted Vertical Exit Angle: {pred_angle:.2f}°<br>Actual Vertical Exit Angle: {new_bat['hitangle2'].iloc[0]:.2f}<br>Outs on Play: {new_bat['outsplay'].iloc[0]:.2f}<br>Hit Probability: {hit_prob:.2f}"
-    fig.add_trace(go.Scatter3d(
-        x=[ball_contact[0]], y=[ball_contact[1]], z=[ball_contact[2]],
-        mode='text',
-        text=[annotation_text],
-        textposition='top right',
-        name='Hit Info'
-    ))
 
-    
+    strike_zone = go.Mesh3d(
+        x=[-1, 1, 1, -1],
+        y=[0, 0, 0, 0],
+        z=[1.5, 1.5, 3.75, 3.75],
+        opacity=0.8,
+        color='green',
+        name='Strike Zone'
+    )
+    fig.add_trace(strike_zone)
+
+    inch_to_foot = 1/12
+    thickness = .03
+
+    home_plate = go.Mesh3d(
+        # Define the points of the 3D home plate (flipped)
+        x=[-8.5*inch_to_foot, 8.5*inch_to_foot, 8.5*inch_to_foot, 0, -8.5*inch_to_foot,
+        -8.5*inch_to_foot, 8.5*inch_to_foot, 8.5*inch_to_foot, 0, -8.5*inch_to_foot],
+        y=[17*inch_to_foot, 17*inch_to_foot, 8.5*inch_to_foot, 0, 8.5*inch_to_foot,
+        17*inch_to_foot, 17*inch_to_foot, 8.5*inch_to_foot, 0, 8.5*inch_to_foot],
+        z=[0, 0, 0, 0, 0,
+        thickness, thickness, thickness, thickness, thickness],
+        i=[0, 0, 0, 5, 5, 5, 0, 1, 2, 3],
+        j=[1, 2, 3, 6, 7, 8, 5, 6, 7, 8],
+        k=[2, 3, 4, 7, 8, 9, 1, 2, 3, 4],
+        opacity=1,
+        color='pink',
+        name='Home Plate',
+        showlegend=False,  # Remove legend for home plate
+        lighting=dict(
+            ambient=1,
+            diffuse=0,
+            specular=0,
+            roughness=1,
+            fresnel=0
+        ),
+        lightposition=dict(x=0, y=0, z=100000),
+        flatshading=True,
+    )
+    fig.add_trace(home_plate)
+
     # Set plot layout
     fig.update_layout(
         scene=dict(
-            xaxis_title='X Axis',
-            yaxis_title='Y Axis',
-            zaxis_title='Z Axis'
+            xaxis_title='X Axis (ft)',
+            yaxis_title='Y Axis (ft)',
+            zaxis_title='Z Axis (ft)'
         ),
         title='3D Scatter Plot of Bat Points with Ball Exit Direction',
         title_x=0.5,
@@ -145,10 +205,27 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, la_model, sc_hit_pr
         width=575
     )
 
-    
+    # return fig
 
-    # Show the plot
-    return fig
+    fig_dict = {
+        'data': [trace.to_plotly_json() for trace in fig.data], 
+        'layout': fig.layout.to_plotly_json(),
+        'label': {
+            "Actual Hit Speed": f"{new_bat['hitspeed_mph'].iloc[0]} mph",
+            "Predicted Hit Speed": f"{hitspeed:.2f} mph",
+            "Horizontal Exit Angle": f"{hitangle1:.2f}°",
+            "Predicted Vertical Exit Angle": f"{pred_angle:.2f}°",
+            "Actual Vertical Exit Angle": f"{new_bat['hitangle2'].iloc[0]:.2f}°",
+            "Outs on Play": f"{new_bat['outsplay'].iloc[0]:.2f}",
+            "Old Hit Probability": f"{hit_prob_orig:.2f}",
+            "New Hit Probability": f"{hit_prob_pred:.2f}"
+        }
+    }
+
+    return fig_dict
+
+    
+    
 
 
 

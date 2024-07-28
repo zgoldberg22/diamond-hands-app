@@ -3,25 +3,30 @@
 }
 
 .graphs {
-   margin-top: 40px; 
+   margin-top: 20px; 
    display: flex;
    flex-direction: row;
    flex-wrap: wrap;
-   gap: 15px;
-   align-items: center;
+   gap: 10px;
+   align-items: top;
    justify-content: space-between;
 }
 
 .actual {
-   background-color: rgb(220, 220, 220);
+   background-color: rgb(237, 237, 237);
+   border: 2px solid rgb(237, 237, 237); 
    border-radius: 5px;
    padding: 10px;
+   padding-bottom: 175px;
+}
+.actual-values .list-group-item {
+   background-color: rgb(253, 253, 253);
 }
 
 .predicted {
-   background-color: rgb(239, 248, 255);
+   border: 5px solid rgb(237, 237, 237); 
    border-radius: 5px;
-   padding: 10px;
+   padding: 7px;
 }
 
 .ball-slider {

@@ -4,6 +4,7 @@ import pandas as pd
 import string
 import random
 from decrypt import decrypt_json
+import pickle
 
 def get_json(file_name):
     root = os.path.realpath(os.path.dirname(__file__))
@@ -29,6 +30,11 @@ def get_ball_tracking_df():
    data = get_decrypted_data("ball_tracking_encrypted.bin")
    return pd.DataFrame(data)
 
+def decrypted_data_to_df(file_path):
+   data = get_decrypted_data(file_path)
+   return pd.DataFrame(data); 
+
+
 def filter_by_args(args, data): 
    filtered_data = data.copy()
    if 'swing' in args and args['swing'].lower() == 'true':
@@ -49,3 +55,10 @@ def filter_by_args(args, data):
          filtered_data = filtered_data[filtered_data[key] == updated_value]
 
    return filtered_data
+
+def unpickle(file_path):
+   with open(file_path, 'rb') as f:
+      model = pickle.load(f)
+
+   return model
+   
