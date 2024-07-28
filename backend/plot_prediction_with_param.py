@@ -115,6 +115,8 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
     # plot extrapolated bat position
     start = [new_bat['bat_handle_at_contact_x'].iloc[0], new_bat['bat_handle_at_contact_y'].iloc[0], new_bat['bat_handle_at_contact_z'].iloc[0]]
     end = [new_bat['bat_head_at_contact_x'].iloc[0], new_bat['bat_head_at_contact_y'].iloc[0], new_bat['bat_head_at_contact_z'].iloc[0]]
+    fig.add_trace(go.Surface(x=X.tolist(), y=Y.tolist(), z=Z.tolist(), colorscale=[[0, 'red'], [1,'red']], showscale=False))
+
     X, Y, Z = create_cylinder(start, end, bat_radius)
 
     # Function to create a sphere
