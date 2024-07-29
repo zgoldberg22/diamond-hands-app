@@ -73,4 +73,4 @@ def get_plot_prediction():
 
 ## IMPORTANT - Anything that is being returned from a Flask app function needs to return a Json serializable object (jsonify() function does this), but some types, like numpy arrays, are not serializable
 if __name__ == "__main__":
-   app.run(debug=True, host='0.0.0.0', port=10000)
+   app.run(debug=True, host='0.0.0.0', port=8000)
