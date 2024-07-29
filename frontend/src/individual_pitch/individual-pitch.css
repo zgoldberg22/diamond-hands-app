@@ -21,7 +21,7 @@
 }
 
 .actual-values {
-   margin-bottom: 248px;
+   margin-bottom: 80px;
 }
 
 .actual-values .list-group-item {
@@ -86,3 +86,6 @@
    width: 250px; 
 }
 
+.og-values p{
+   margin: 6px; 
+}

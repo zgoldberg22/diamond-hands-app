@@ -19,9 +19,6 @@ export default function AllPitches() {
       playerId: "",
      });
 
-   // const [scatterPlotData, setScatterPlotData] = useState({}); 
-   // const [heatmapData, setHeatmapData] = useState({}); 
-   // const [trajData, setTrajData] = useState({}); 
    const [graphData, setGraphData] = useState({})
    const [isLoading, setIsLoading] = useState(true);
 
@@ -31,9 +28,6 @@ export default function AllPitches() {
          try {
             const resData = await getAllPitchGraphs(""); 
             setGraphData(resData); 
-            // setScatterPlotData(resData["strike_zone_scatter"]);
-            // setHeatmapData(resData["heatmap"]); 
-            // setTrajData(resData["pitch_trajectories"]) 
          } catch (error) {
             console.error("Error fetching initial data:", error);
          } finally {
@@ -65,7 +59,7 @@ export default function AllPitches() {
                <h2>
                   <strong>Analyze All Pitches</strong>
                </h2>
-               <p>Description about how any why...</p>
+               <p>Sort pitches by result (HitIntoPlay, Strike, or Ball) and delve deeper into specific outcomes, such as whether a hit resulted in an out or if a strike was fouled, swinging, or called. These visualizations can help with understanding the relationship between pitch locations and outcomes.</p>
             <FilterSystem setAppFilters={setFilters} />
             <div className="graphs">
                <PitchHeatMap 

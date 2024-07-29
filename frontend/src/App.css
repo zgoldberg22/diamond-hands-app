@@ -18,6 +18,14 @@
   margin-bottom: 10px;
 }
 
+.header h1 {
+  font-size: 40px;
+}
+
+.header button {
+  margin-bottom: 10px;
+}
+
 .gridAndFilters {
   /* width: 90vw;  */
   font-size: 18px; 
@@ -38,6 +46,10 @@
   padding: 2rem;
   border-radius: 10px;
   margin-bottom: 1rem;
+}
+
+.modal-footer {
+  justify-items: left;
 }
 
 @keyframes logo-spin {

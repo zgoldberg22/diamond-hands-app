@@ -176,14 +176,26 @@ export default function IndividualPitch() {
                   <h4 style={{paddingBottom: "10px"}} >
                      <strong>True Values</strong>
                   </h4>
-                  <ListGroup className="actual-values" >
-                     <ListGroup.Item>True Hit Speed: {plotData["contactPoint"]["label"]["Actual Hit Speed"]}</ListGroup.Item>
-                     <ListGroup.Item>True Vertical Exit Angle: {plotData["contactPoint"]["label"]["Actual Vertical Exit Angle"]}</ListGroup.Item>
-                     <ListGroup.Item>Horizontal Exit Angle: {plotData["contactPoint"]["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
-                     <ListGroup.Item>Old Hit Probability: {plotData["contactPoint"]["label"]["Old Hit Probability"]}</ListGroup.Item>
-                     <ListGroup.Item>Outs on Play: {plotData["contactPoint"]["label"]["Outs on Play"]}</ListGroup.Item>
-                  </ListGroup>
-                  <p></p>
+                  <div className="actual-values">
+                     <ListGroup  >
+                        <ListGroup.Item>True Hit Velocity: {plotData["contactPoint"]["label"]["Actual Hit Speed"]}</ListGroup.Item>
+                        <ListGroup.Item>True Vertical Exit Angle: {plotData["contactPoint"]["label"]["Actual Vertical Exit Angle"]}</ListGroup.Item>
+                        <ListGroup.Item>Horizontal Exit Angle: {plotData["contactPoint"]["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
+                        <ListGroup.Item>Hit Probability: {plotData["contactPoint"]["label"]["Old Hit Probability"]}</ListGroup.Item>
+                        <ListGroup.Item>Outs on Play: {plotData["contactPoint"]["label"]["Outs on Play"]}</ListGroup.Item>
+                     </ListGroup>
+                     <p></p>
+                     <p><strong>True Values at Contact Point: </strong></p>
+                    
+                     <div className="og-values">
+                        <p>Ball Z-Position (ft): {plotData["contactPoint"]["label"]["Original Bat Position"]}</p>
+                        <p>Bat Speed (ft/s): {plotData["contactPoint"]["label"]["Original Bat Speed"]}</p>
+                        <p>Bat Approach Angle (deg): {plotData["contactPoint"]["label"]["Original Bat Angle"]}</p>
+                     </div>
+                    
+                  </div>
+
+                  <hr></hr>
 
                   <div className="actualPlots" >
                      <ContactPlot plotData={plotData["contactPoint"] || {}} />
@@ -205,15 +217,15 @@ export default function IndividualPitch() {
                   </h4>
                   
                   <ListGroup>
-                     <ListGroup.Item>Predicted Hit Speed: {predictedData["contactPoint"]["label"]["Predicted Hit Speed"]}</ListGroup.Item>
+                     <ListGroup.Item>Predicted Hit Velocity: {predictedData["contactPoint"]["label"]["Predicted Hit Speed"]}</ListGroup.Item>
                      <ListGroup.Item>Predicted Vertical Exit Angle: {predictedData["contactPoint"]["label"]["Predicted Vertical Exit Angle"]}</ListGroup.Item>
                      <ListGroup.Item>Horizontal Exit Angle: {predictedData["contactPoint"]["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
-                     <ListGroup.Item>New Hit Probability: {plotData["contactPoint"]["label"]["New Hit Probability"]}</ListGroup.Item>
+                     <ListGroup.Item>Predicted Hit Probability: {plotData["contactPoint"]["label"]["New Hit Probability"]}</ListGroup.Item>
                      <ListGroup.Item>Outs on Play: {plotData["contactPoint"]["label"]["Outs on Play"]}</ListGroup.Item>
                   </ListGroup>
                   <p></p>
 
-                  <p><strong>Change Values to Predict Launch Angle: </strong></p>
+                  <p><strong>Change Values to Predict Launch Angle & Velocity: </strong></p>
                   <Form.Group className="predicted-measures">
                      <Form.Group className="ball-slider">
                         <Form.Label>Change in Ball Z-Position (ft): {params.change_in_z}</Form.Label>
@@ -240,7 +252,7 @@ export default function IndividualPitch() {
                      </Form.Group>
 
                      <Form.Group className="bat-plane-slider">
-                        <Form.Label>Change in Bat Plane (deg): {params.change_in_bat_plane}</Form.Label>
+                        <Form.Label>Change in Bat Approach (deg): {params.change_in_bat_plane}</Form.Label>
                         <Form.Range
                            className="bat-plane"
                            min={-30}
@@ -284,11 +296,41 @@ export default function IndividualPitch() {
        </div> 
        )}
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} >
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
          <Modal.Header closeButton>
-            <Modal.Title>About Contact Analysis</Modal.Title>
+            <Modal.Title><strong>About Contact Analysis</strong></Modal.Title>
          </Modal.Header>
-         <Modal.Body>Description... </Modal.Body>
+         <Modal.Body>
+            <p>Our tool aims to analyze and improve the quality of a baseball swing by examining the characteristics that lead to successful contact with the ball. The motivation behind this tool is to help batters enhance their swings to increase the likelihood of achieving hits rather than outs.</p>
+
+            <p><strong>True Values (Left Side):</strong> </p>
+            <ul>
+               <li>Displays swing and hit information, including the ball exit vector for the actual pitch.</li>
+               <li>Shows the final hit probability based on the true data.</li>
+               <li>Graphs depict the true and predicted exit velocity and launch angle, providing insights into the accuracy of our models.</li>
+            </ul>
+            <p><strong>Predicted Values (Right Side):</strong> </p>
+            <ul>
+               <li>Allows users to experiment with changing certain swing characteristics to see how these adjustments affect the likelihood of a hit.</li>
+               <li>Users can modify:</li>
+               <ul>
+                  <li><em>Bat Approach Angle</em>: The angle of the bat's velocity vector relative to the xy-plane at the point of contact.</li>
+                  <li><em>Bat Speed</em>: The speed of the bat at the point where contact is made.</li>
+                  <li><em>Z Position</em>: The vertical position of the bat, relative to the ball at contact.</li>
+               </ul>
+            </ul>
+
+            <p>Once the parameters are adjusted, the tool recalculates the relevant features and passes them into our models to generate new predictions for exit velocity and launch angle. These predictions are then used to determine the corresponding <em>hit probability</em> using Statcast data. The change in hit probability from the original swing (left) to the modified swing (right) illustrates the impact of the adjustments on contact quality.</p>
+
+            <hr></hr>
+
+            <p><strong>Parameter explanations:</strong> </p>
+               <ul>
+                  <li>Bat approach angle: The angle (in degrees) of the bat's velocity vector at the point of contact, measured relative to the horizontal plane. A positive angle indicates an upward trajectory, while a negative angle signifies a downward path.</li>
+                  <li>Bat speed: The velocity of the point on the bat where it makes contact with the ball at the moment of impact.</li>
+                  <li>Z Position: The vertical position of the bat relative to the center of the ball. Increasing the z position shifts the whole bat up,and decreasing it shifts it down.</li>
+               </ul>
+         </Modal.Body>
       </Modal>
          
       </div>

@@ -27,6 +27,8 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
     one_bat = bat_tracking[bat_tracking['hiteventId'] == hiteventId]
     new_bat = hit_contact[hit_contact['hiteventId'] == hiteventId]
 
+    og_bat_speed = np.linalg.norm([new_bat['bat_vel_at_contact_x'].iloc[0], new_bat['bat_vel_at_contact_y'].iloc[0], new_bat['bat_vel_at_contact_z'].iloc[0]])
+
     tan=new_bat['bat_vel_at_contact_z'].iloc[0] / new_bat['bat_vel_at_contact_y'].iloc[0]
     angle_radians = math.atan(tan)
     og_bat_plane = math.degrees(angle_radians)
@@ -35,6 +37,8 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
         bat_plane = og_bat_plane
     else:
         bat_plane = og_bat_plane + change_in_bat_plane
+
+    og_bat_z = new_bat['differential_z'].iloc[0]
 
     if change_in_z is not None:
         new_bat['differential_z'].iloc[0] = new_bat['differential_z'].iloc[0] + change_in_z
@@ -243,7 +247,10 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
             "Actual Vertical Exit Angle": f"{new_bat['hitangle2'].iloc[0]:.2f}°",
             "Outs on Play": f"{new_bat['outsplay'].iloc[0]:.2f}",
             "Old Hit Probability": f"{hit_prob_orig:.2f}",
-            "New Hit Probability": f"{hit_prob_pred:.2f}"
+            "New Hit Probability": f"{hit_prob_pred:.2f}", 
+            "Original Bat Position": f"{og_bat_z:.2f}", 
+            "Original Bat Speed": f"{og_bat_speed:.2f}", 
+            "Original Bat Angle": f"{bat_plane:.2f}"
         }
     }
 
