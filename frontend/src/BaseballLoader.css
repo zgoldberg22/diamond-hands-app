@@ -1,0 +1,72 @@
+
+.loader-container {
+   margin-top: 50px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+ } 
+
+.baseballIcon {
+   width: 8em;
+   height: 8em;
+   border-radius: 50%;
+   background: radial-gradient(circle, white 60%, transparent 61%), radial-gradient(circle, white 60%, transparent 61%);
+   background-position: center;
+   background-size: cover;
+   position: relative;
+   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   animation: spin 5s linear infinite, fade 2s ease-in-out infinite;
+};
+
+ .baseballIcon::before,
+ .baseballIcon::after {
+   content: '';
+   position: absolute;
+   top: 0;
+   left: 50%;
+   width: 100%;
+   height: 100%;
+   border: 2px solid red;
+   border-radius: 50%;
+   border-left-color: transparent;
+   border-right-color: transparent;
+ }
+  
+ .baseballIcon::before {
+   transform: rotate(45deg);
+ }
+ 
+ .baseballIcon::after {
+   transform: rotate(-45deg);
+ }
+ 
+
+ @keyframes pulse {
+   0%, 100% {
+     transform: scale(1);
+     opacity: 1;
+   }
+   50% {
+     transform: scale(0.8);
+     opacity: 0.5;
+   }
+ }
+ 
+ @keyframes spin {
+   0% {
+     transform: rotate(0deg);
+   }
+   100% {
+     transform: rotate(360deg);
+   }
+ }
+ 
+ @keyframes fade {
+   0%, 100% {
+     opacity: 1;
+   }
+   50% {
+     opacity: 0.5;
+   }
+ }
+ 

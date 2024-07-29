@@ -1,0 +1,118 @@
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: left;
+  align-content: flex-items;
+}
+
+.app {
+  width: 85vw; 
+}
+
+.header {
+  display: flex; 
+  align-items: center;
+  justify-content: space-between;
+  justify-items: center;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 40px;
+}
+
+.header button {
+  margin-bottom: 10px;
+}
+
+.gridAndFilters {
+  /* width: 90vw;  */
+  font-size: 18px; 
+}
+
+.countFilter {
+  display: flex;
+  align-items: center;
+}
+
+.countFilter input {
+  height: 25px;
+  width: 30px;  
+}
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.modal-footer {
+  justify-items: left;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Custom styles for Bootstrap tabs */
+.nav-pills .nav-link {
+  color: #333;
+  background-color: transparent;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.nav-item .nav-link:hover {
+  background-color: rgba(52, 58, 64, 0.1);
+  color: rgba(0, 0, 0, 1); 
+}
+
+.nav-pills .nav-item .nav-link.active {
+  color: #fff;
+  background-color: #343a40;
+  border-radius: 0px;
+}
+
+.nav-pills .nav-item .nav-link:not(.active) {
+  border-color: #343a40;
+  color: rgba(97, 97, 97, 1); 
+  border-radius: 0px;
+}
+
+.icon-button {
+  padding: 0.5rem 0.5rem; /* Adjust padding as needed */
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button .icon {
+  margin-right: 0.5rem; /* Adjust space between icon and text */
+  margin-bottom: 0.1rem;
+}
+
+.icon-button .button-text {
+  /* margin-top: 50%;  */
+  margin-left: 0.25rem; /* Fine-tune text position if needed */
+}

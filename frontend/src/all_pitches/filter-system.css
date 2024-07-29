@@ -1,0 +1,112 @@
+.filter-system {
+   margin-bottom: 20px;
+   margin-top: 10px; 
+   width: 100%; 
+ }
+ 
+ .filter-row {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap: 15px;
+   align-items: center;
+   justify-content: left;
+   background-color: rgb(235, 235, 235);
+   padding: 10px; 
+   border-radius: 5px;
+ }
+ 
+ .filter-item {
+   display: flex;
+   flex-direction: column;
+   min-width: 175px;
+ }
+
+.resetBtn {
+  font-size: 20px; 
+  height: 3.5rem;
+  width: 3.5rem;
+  margin-bottom: 9px;
+  /* width: calc(3.5rem + 2px); */
+ }
+
+ /* .gameSelect {
+  width: 200px; 
+ } */
+
+ /* .filter-item {
+  flex: 1;
+} */
+
+.strike-button-group .btn {
+  height: calc(3.5rem + 2px); /* Match the height of the select elements */
+  min-width: 150px; 
+  color: #000;
+  border-color: rgb(177, 177, 177);
+  background-color: rgb(250, 250, 250);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* margin-right: 10px; Separate the buttons by 10px */
+}
+
+.strike-button-group .btn:last-child {
+  margin-right: 0; 
+}
+
+.hitsFilters {
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px; 
+}
+
+.hits-button-group .btn {
+  height: calc(3.5rem + 2px); /* Match the height of the select elements */
+  min-width: 125px; 
+  color: #000;
+  border-color: rgb(177, 177, 177);
+  background-color: rgb(250, 250, 250);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  /* margin-right: 10px; Separate the buttons by 10px */
+}
+
+.hits-button-group .btn:last-child {
+  margin-right: 0; 
+}
+
+.teamSelect {
+  width: 150px; 
+  border-color: rgb(177, 177, 177);
+}
+
+ .filter-radio-buttons {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: wrap;
+   gap: 30px;
+   align-items: flex-start;
+ }
+ 
+ .filter-item label {
+   margin-bottom: 5px;
+ }
+ 
+ .filter-item select,
+ .filter-item input {
+   width: 100%;
+ }
+ 
+ button {
+   margin-top: 10px;
+ }
+
+ .countFilter input{
+  width: 50px; 
+ }
+ 
