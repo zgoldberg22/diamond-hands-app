@@ -8,6 +8,6 @@ const BaseballLoader = () => {
       <FaBaseballBall className="baseballIcon" />
     </div>
   );
-};
+}
 
 export default BaseballLoader;

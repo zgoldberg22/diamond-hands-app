@@ -46,7 +46,7 @@ export default function IndividualPitch() {
 
   const handleChange = (paramName, value) => {
     setParams(prevState => ({...prevState, [paramName]: value}))
-  };
+  }
 
     useEffect(() => {
       async function fetchData() {
@@ -105,14 +105,14 @@ export default function IndividualPitch() {
   
    const toggleVisible = () => { 
       const scrolled = document.documentElement.scrollTop; 
-   }; 
+   }
 
    const scrollToGraph = () =>{ 
       window.scrollTo({ 
         top: 600,  
         behavior: 'smooth'
       }); 
-    }; 
+    }
 
     window.addEventListener('scroll', toggleVisible);
 

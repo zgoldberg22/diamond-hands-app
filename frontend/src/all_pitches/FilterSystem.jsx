@@ -43,7 +43,7 @@ const FilterSystem = ({ setAppFilters }) => {
    } else {
       setFilters(prevFilters => ({ ...prevFilters, [filterName]: value, "swing": null }));
    }
-  };
+  }
 
   useEffect(() => {
     setAppFilters(filters); 
@@ -61,7 +61,7 @@ const FilterSystem = ({ setAppFilters }) => {
     });
 
     setPeopleOnTeam(allPersonIds); 
-  };
+  }
 
   return (
     <div className="filter-system">
@@ -150,6 +150,6 @@ const FilterSystem = ({ setAppFilters }) => {
       </Form>
     </div>
   );
-};
+}
 
 export default FilterSystem;
