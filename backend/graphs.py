@@ -59,8 +59,6 @@ def single_pitch_plots(hiteventId, change_in_z=None, change_in_bat_speed=None, c
 
     fig_dict_launch_angle = plot_launch_angle_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
 
-    # print(fig_dict_launch_speed_dist)
-
     return {
         "contactPoint": fig_dict_contact,
         "speedVsAngle": fig_dict_speed_vs_angle, 

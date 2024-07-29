@@ -5,7 +5,7 @@ from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_graph
 import json
 
 app = Flask(__name__, static_url_path="", static_folder="../frontend/dist", template_folder="../frontend/dist")
-CORS(app, resources={r"/*": {"origins": "http://localhost:8000"}})
+CORS(app, resources={r"/*": {"origins": "http://0.0.0.0:8000"}})
 
 @app.route("/")
 @cross_origin()
@@ -67,10 +67,10 @@ def get_plot_prediction():
       return jsonify({}), 204
 
    response = jsonify(graph_data)
-   response.headers.add('Access-Control-Allow-Origin', 'http://localhost:8000')
+   response.headers.add('Access-Control-Allow-Origin', 'http://0.0.0.0:8000')
 
    return jsonify(graph_data), 200
 
 ## IMPORTANT - Anything that is being returned from a Flask app function needs to return a Json serializable object (jsonify() function does this), but some types, like numpy arrays, are not serializable
 if __name__ == "__main__":
-   app.run(debug=True)
+   app.run(debug=True, host='0.0.0.0', port=8000)
