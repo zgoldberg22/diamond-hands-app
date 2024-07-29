@@ -1,16 +1,17 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS, cross_origin
 from helpers import get_decrypted_data, filter_by_args, get_basic_pitches_df
 from graphs import plot_pitch_result_heatmap, plot_by_pitch_result_3d, get_graphs_all_pitches, single_pitch_plots, get_hit_contact
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="", static_folder="../frontend/dist", template_folder="../frontend/dist")
 CORS(app, resources={r"/*": {"origins": "http://localhost:5555"}})
 
 @app.route("/")
 @cross_origin()
-def home(): 
-   return "DIAMOND HANDS"
+def index(): 
+   # return "DIAMOND HANDS"
+   return render_template("index.html")
 
 # GET request to get all data from basic_pitches json file or filters with query params 
 # Example of a request: http://127.0.0.1:5000/basic_pitches?outsinning=1&result=Strike
