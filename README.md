@@ -49,9 +49,9 @@ Once you have your virtual environment running, install the required dependencie
 pip install -r requirements.txt
 ```
 
-In the `backend` folder, run the `main.py` file with the command below (you may need to install some of the libraries in this file in your own virtual env). Open a new browser tab and this should run on port `127.0.0.1:5000`. Once you open this window, you should see "DIAMOND HANDS". 
+In the `backend` folder, run the `main.py` file with the command below (you may need to install some of the libraries in this file in your own virtual env). Open a new browser tab and this should run on port `http://0.0.0.0:10000`. Once you open this window, you should see "DIAMOND HANDS". 
 ```
-python3 main.py
+gunicorn --chdir backend main:app --bind 0.0.0.0:10000
 ```
 
 *Note: The data is being pulled from encrypted JSON files to keep the data private. This requires a `.env` file with the secret keys.*
