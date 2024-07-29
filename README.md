@@ -61,3 +61,9 @@ gunicorn --chdir backend main:app --bind 0.0.0.0:10000
 ### **Run the frontend**: 
 Assuming you have Node installed, go into the `frontend` folder and run `npm install` to install all the necessary packages for this project. After everything is done installing, run the command:  `npm run dev` which will open the UI in `http://localhost:5173/`. 
 > You must run the backend and frontend simultaneously in order to pull the data correctly. 
+
+
+## Working Repository:
+Most of the work to test the python functions and model were done in our working private repository here: https://github.com/alessandra-puccio/WISD-DiamondHands/tree/main
+- Model work done in `steph-test` branch
+- Plotting functions for all pitches in `ali-clean` branch
