@@ -1,5 +1,5 @@
 export default async function getBasicPitches() {
-   let api_url = 'http://localhost:5555/basic_pitches'
+   let api_url = 'http://localhost:8000/basic_pitches'
 
    let res = fetch(api_url, {
       mode: 'cors',
@@ -14,7 +14,7 @@ export default async function getBasicPitches() {
 
 
 export async function getHeatmapData(filters) {
-   let api_url = buildApiUrl(filters, 'http://localhost:5555/heatmap'); 
+   let api_url = buildApiUrl(filters, 'http://localhost:8000/heatmap'); 
 
    const response = fetch(api_url, {
       mode: 'cors',
@@ -28,7 +28,7 @@ export async function getHeatmapData(filters) {
 }
 
 export async function getAllPitchGraphs(filters) {
-   let api_url = buildApiUrl(filters, 'http://localhost:5555/all_pitch_graphs'); 
+   let api_url = buildApiUrl(filters, 'http://localhost:8000/all_pitch_graphs'); 
    // console.log(api_url); 
 
    const response = fetch(api_url, {
@@ -43,7 +43,7 @@ export async function getAllPitchGraphs(filters) {
 }
 
 export async function getPitchScatterPlot(filters) {
-   let api_url = buildApiUrl(filters, 'http://localhost:5555/pitch_scatter_plot'); 
+   let api_url = buildApiUrl(filters, 'http://localhost:8000/pitch_scatter_plot'); 
 
    const response = fetch(api_url, {
       mode: 'cors',
@@ -57,7 +57,7 @@ export async function getPitchScatterPlot(filters) {
 }
 
 export async function getContactPlot(args) {
-   let api_url = buildApiUrl(args, 'http://localhost:5555/plot_prediction'); 
+   let api_url = buildApiUrl(args, 'http://localhost:8000/plot_prediction'); 
 
    const response = fetch(api_url, {
       mode: 'cors',
@@ -71,7 +71,7 @@ export async function getContactPlot(args) {
 }
 
 export async function getAllHits() {
-   let api_url = 'http://localhost:5555/all_hits'; 
+   let api_url = 'http://localhost:8000/all_hits'; 
 
    const response = fetch(api_url, {
       mode: 'cors',
