@@ -7,6 +7,7 @@ from plotly.subplots import make_subplots
 import numpy as np
 from scipy.stats import gaussian_kde
 import json
+import os
 import pickle
 from helpers import get_basic_pitches_df, get_ball_tracking_df, filter_by_args, get_json, unpickle, decrypted_data_to_df, get_decrypted_data
 from plot_prediction_with_param import plot_contact_pred, plot_launch_speed_vs_angle, plot_launch_speed_distribution, plot_launch_angle_distribution
@@ -17,13 +18,13 @@ ball_tracking = get_ball_tracking_df()
 bat_tracking = decrypted_data_to_df("bat_tracking_hits_encrypt.bin")
 hit_contact = decrypted_data_to_df("hit_contact_encrypt.bin")
 sc_hits_preds = get_json("sc_data.json")
-
-la_model = unpickle('la_model.pkl')
-la_scaler_X = unpickle('la_scaler_X.pkl')
-la_scaler_y = unpickle('la_scaler_Y.pkl')
-ev_model = unpickle('ev_model.pkl')
-ev_scaler_X = unpickle('ev_scaler_X.pkl')
-ev_scaler_y = unpickle('ev_scaler_Y.pkl')
+ 
+la_model = unpickle(os.path.join(os.path.dirname(__file__), 'la_model.pkl'))
+la_scaler_X = unpickle(os.path.join(os.path.dirname(__file__), 'la_scaler_X.pkl'))
+la_scaler_y = unpickle(os.path.join(os.path.dirname(__file__), 'la_scaler_y.pkl'))
+ev_model = unpickle(os.path.join(os.path.dirname(__file__), 'ev_model.pkl'))
+ev_scaler_X = unpickle(os.path.join(os.path.dirname(__file__), 'ev_scaler_X.pkl'))
+ev_scaler_y = unpickle(os.path.join(os.path.dirname(__file__), 'ev_scaler_y.pkl'))
 
 def get_hit_contact():
     return get_decrypted_data("hit_contact_encrypt.bin")
