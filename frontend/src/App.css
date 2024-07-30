@@ -10,6 +10,15 @@
   width: 85vw; 
 }
 
+nav {
+  width: 100%;
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+  justify-items: center;
+}
+
+
 .header {
   display: flex; 
   align-items: center;
@@ -27,7 +36,7 @@
 }
 
 .gridAndFilters {
-  /* width: 90vw;  */
+  min-width: 100%; 
   font-size: 18px; 
 }
 
@@ -81,6 +90,14 @@
   background-color: transparent;
   border: 2px solid transparent;
   transition: all 0.3s ease;
+}
+
+.nav-item {
+  width: 50%; 
+  color: #333;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
 .nav-item .nav-link:hover {

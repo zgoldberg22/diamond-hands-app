@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {useState, useEffect} from 'react'; 
 import './all-pitches.css';
-
+import { Button } from 'react-bootstrap';
 import FilterSystem from './FilterSystem';
 import PitchHeatMap from "./PitchHeatMap";
 import PitchScatterPlot from './PitchScatterPlot';
 import {getAllPitchGraphs} from '../api';
 import BaseballLoader from '../BaseballLoader';
+import {FaArrowDown} from 'react-icons/fa'; 
 
 export default function AllPitches() {
    const [filters, setFilters] = useState({
@@ -20,13 +21,13 @@ export default function AllPitches() {
      });
 
    const [graphData, setGraphData] = useState({})
-   const [isLoading, setIsLoading] = useState(true);
+   const [isLoading, setIsLoading] = useState(false);
+   const [generatedInitial, setGeneratedInitial] = useState(false); 
 
    useEffect(() => {
       async function fetchData() {
-         setIsLoading(true); 
          try {
-            const resData = await getAllPitchGraphs(""); 
+            const resData = await getAllPitchGraphs(filters); 
             setGraphData(resData); 
          } catch (error) {
             console.error("Error fetching initial data:", error);
@@ -35,48 +36,75 @@ export default function AllPitches() {
          }
       }
 
-      fetchData(); 
-
-   }, []);
-
-   useEffect(() => {
-      async function fetchData() {
-         const resData = await getAllPitchGraphs(filters); 
-         setGraphData(resData);
+      if(generatedInitial) {
+         fetchData(); 
       }
-
-      fetchData(); 
-      
+     
    }, [filters])
+
+   async function fetchAllPitches() {
+      setIsLoading(true); 
+      try {
+         const resData = await getAllPitchGraphs(filters); 
+         setGraphData(resData); 
+      } catch (error) {
+         console.error("Error fetching initial data:", error);
+      } finally {
+         setIsLoading(false);
+      }
+   }
+
+   const handleClick = () => {
+      fetchAllPitches()
+      setGeneratedInitial(true);
+   }
 
    return (
       <div>
-        {isLoading && graphData ? (
-         <BaseballLoader />
-        ) : (
+       
          <div>
             <br/>
-               <h2>
-                  <strong>Analyze All Pitches</strong>
-               </h2>
-               <p>Sort pitches by result (HitIntoPlay, Strike, or Ball) and delve deeper into specific outcomes, such as whether a hit resulted in an out or if a strike was fouled, swinging, or called. These visualizations can help with understanding the relationship between pitch locations and outcomes.</p>
-            <FilterSystem setAppFilters={setFilters} />
-            <div className="graphs">
-               <PitchHeatMap 
-                  heatmapData={graphData["heatmap"]} 
-               /> 
-         
-               <PitchScatterPlot 
-                  scatterPlot={graphData["strike_zone_scatter"]}
-               />
+            <h2>
+               <strong>Analyze All Pitches</strong>
+            </h2>
+            <p>Sort pitches by result (HitIntoPlay, Strike, or Ball) and delve deeper into specific outcomes, such as whether a hit resulted in an out or if a strike was fouled, swinging, or called. These visualizations can help with understanding the relationship between pitch locations and outcomes.</p>
+            
+            <div>
+               {!generatedInitial &&
+                <Button variant="secondary" onClick={handleClick}>
+                  <span><FaArrowDown style={{display: 'inline', marginRight: '8px'}} />Generate Initial All Pitch Analysis</span>
+               </Button>
+               }
+              
+              {/* Only show filter system when everything is loaded initially */}
+               {isLoading && graphData ? (
+                     <BaseballLoader />
+                  ) : (
+                     <div>
+                        {generatedInitial && 
+                           <div>
+                              <FilterSystem setAppFilters={setFilters} />
+                              <div className="graphs">
+                                 <PitchHeatMap 
+                                    heatmapData={graphData["heatmap"]} 
+                                 /> 
+                           
+                                 <PitchScatterPlot 
+                                    scatterPlot={graphData["strike_zone_scatter"]}
+                                 />
+                              </div>
+                              <div style={{marginTop: '10px'}}>
+                                 <PitchScatterPlot scatterPlot={graphData["pitch_trajectories"]} />
+                              </div>
+                           </div>
+                        }
+                     </div>
+                     
+                  )}
             </div>
-
-            <div style={{marginTop: '10px'}}>
-               <PitchScatterPlot scatterPlot={graphData["pitch_trajectories"]} />
-            </div>
+                
          </div>
-        )
-      }  
+        
       </div>
    )
 }

@@ -2,12 +2,13 @@ import * as React from 'react';
 import {useState, useEffect} from 'react'; 
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.css'; 
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import { Modal, Button } from 'react-bootstrap';
+// import Tab from 'react-bootstrap/Tab';
+// import Tabs from 'react-bootstrap/Tabs';
+import { Modal, Button, Nav } from 'react-bootstrap';
 import { InfoCircle } from 'react-bootstrap-icons';
 import AllPitches from './all_pitches/AllPitches'; 
 import IndividualPitch from './individual_pitch/IndividualPitch';
+import {Routes, Route, NavLink, Outlet} from 'react-router-dom'; 
 
 export default function App() {
   const [show, setShow] = useState(false);
@@ -17,6 +18,7 @@ export default function App() {
 
   return (
     <div className="app">
+      {/* define header above Routes */}
       <div className="header">
         <h1>
           <strong>DiamondMetrics</strong>: A Pitch & Swing Analysis Tool
@@ -58,24 +60,26 @@ export default function App() {
           </div>
         </Modal.Footer>
       </Modal>
-      
-      <div className="gridAndFilters">
-        <Tabs
-          defaultActiveKey="allGames"
-          id="tab"
-          className="tabs"
-          variant='pills'
-          justify
-        >
-          <Tab eventKey="allGames" title="All Pitches Analysis">
-            <AllPitches />
-          </Tab>
-          <Tab eventKey="pitch" title="Contact Point Analysis">
-            <IndividualPitch />
-          </Tab>
-        </Tabs>
 
+      <div className="gridAndFilters">
+        <Nav variant="pills">
+          <Nav.Item>
+            <Nav.Link as={NavLink} to="/" end>
+              All Pitches Analysis
+            </Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link as={NavLink} to="/individual_pitch">
+              Contact Point Analysis
+            </Nav.Link>
+          </Nav.Item>
+        </Nav>
       </div>
+
+      <Routes>
+         <Route path="/" element={<AllPitches />} />
+         <Route path="/individual_pitch" element={<IndividualPitch />} />
+      </Routes>
     </div>
     
   );
