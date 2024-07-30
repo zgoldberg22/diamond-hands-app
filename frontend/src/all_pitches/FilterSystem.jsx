@@ -23,7 +23,7 @@ const allPersonIds = ["", 360906992, 719146721, 485007791, 451871192, 223971350,
 const FilterSystem = ({ setAppFilters }) => {
   const [filters, setFilters] = useState({
    gameid: "",
-   result: "", //Strike, Ball or HitIntoPlay
+   result: "Ball", //Strike, Ball or HitIntoPlay
    action: "", // Foul, FoulTip, Called
    swing: null, //hitEventId != null
    outsplay: "", 
@@ -52,7 +52,7 @@ const FilterSystem = ({ setAppFilters }) => {
   const resetFilters = () => {
     setFilters({
       gameid: "",
-      result: "", //Strike, Ball or HitIntoPlay
+      result: "HitIntoPlay", //Strike, Ball or HitIntoPlay
       action: "", // Foul, FoulTip, Called
       swing: null, //hitEventId != null
       outsplay: "", 
@@ -79,10 +79,10 @@ const FilterSystem = ({ setAppFilters }) => {
          <Form.Group className='filter-item'>
             <FloatingLabel label="Hit Result">
                <Form.Control as="select" name="result" id="result" onChange={(e) => updateFilter('result', e.target.value)} value={filters.result}>
-                  <option value="">All Pitches</option>
+                  {/* <option value="">All Pitches</option>   */} {/* Removed for deployment */}
+                  <option value="Ball">Ball</option>
                   <option value="HitIntoPlay">Hit Into Play</option>
                   <option value="Strike">Strike</option>
-                  <option value="Ball">Ball</option>
                </Form.Control>
             </FloatingLabel>
          </Form.Group>

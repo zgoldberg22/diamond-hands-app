@@ -12,7 +12,7 @@ import {FaArrowDown} from 'react-icons/fa';
 export default function AllPitches() {
    const [filters, setFilters] = useState({
       games: "",
-      result: "", //Strike, Ball or HitIntoPlay
+      result: "Ball", //Strike, Ball or HitIntoPlay
       action: "", // Foul, FoulTip, Called
       swing: null, //hitEventId != null
       outsPlay: "", 
@@ -61,13 +61,13 @@ export default function AllPitches() {
 
    return (
       <div>
-       
          <div>
             <br/>
             <h2>
                <strong>Analyze All Pitches</strong>
             </h2>
             <p>Sort pitches by result (HitIntoPlay, Strike, or Ball) and delve deeper into specific outcomes, such as whether a hit resulted in an out or if a strike was fouled, swinging, or called. These visualizations can help with understanding the relationship between pitch locations and outcomes.</p>
+            <p><em>Note: We had to remove the "All" selection in the "Hit Results" filter due to a limited CPU with our deployment. Please wait a few seconds to see the results of the filters.</em></p>
             
             <div>
                {!generatedInitial &&
