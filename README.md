@@ -1,5 +1,10 @@
 # DiamondMetrics
 
+## Deployment
+**Deployed site here**: https://diamond-hands-app.onrender.com/
+
+The deployed site is based off the `deploy` branch. Some changes were made on the deploy branch in order to work with the limited CPU on the deployment service. Specifically, the "All Results" option from the filter on the "All Pitch Analysis" section because it returned too much data for the API response to handle when it was deployed. 
+
 ## App Structure
 Important files highlighted here: 
 
@@ -23,7 +28,7 @@ root
 │   
 └───frontend
     │   main.jsx
-    │   App.jsx
+    │   App.jsx (Routes are specified here)
     |   api.js (API call functions to backend)
     |   |
 │   └───all_pitches
@@ -34,11 +39,8 @@ root
 
 ```
 
-
 ## **Run the App Locally**
 >These directions assume you have Python 3 and Node v18 already installed on your system. 
-
-<br/>
 
 ### **Run the backend**: 
 
@@ -55,8 +57,6 @@ gunicorn --chdir backend main:app --bind 0.0.0.0:10000
 ```
 
 *Note: The data is being pulled from encrypted JSON files to keep the data private. This requires a `.env` file with the secret keys.*
-
-<br/>
 
 ### **Run the frontend**: 
 Assuming you have Node installed, go into the `frontend` folder and run `npm install` to install all the necessary packages for this project. After everything is done installing, run the command:  `npm run dev` which will open the UI in `http://localhost:5173/`. 
