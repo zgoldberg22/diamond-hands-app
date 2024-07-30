@@ -1,4 +1,4 @@
-# Swing Savvy
+# DiamondMetrics
 
 ## App Structure
 Important files highlighted here: 
