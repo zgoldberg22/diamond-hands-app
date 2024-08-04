@@ -220,7 +220,7 @@ export default function IndividualPitch() {
                      <ListGroup.Item>Predicted Hit Velocity: {predictedData["contactPoint"]["label"]["Predicted Hit Speed"]}</ListGroup.Item>
                      <ListGroup.Item>Predicted Vertical Exit Angle: {predictedData["contactPoint"]["label"]["Predicted Vertical Exit Angle"]}</ListGroup.Item>
                      <ListGroup.Item>Horizontal Exit Angle: {predictedData["contactPoint"]["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
-                     <ListGroup.Item>Predicted Hit Probability: {plotData["contactPoint"]["label"]["New Hit Probability"]}</ListGroup.Item>
+                     <ListGroup.Item>Predicted Hit Probability: {predictedData["contactPoint"]["label"]["New Hit Probability"]}</ListGroup.Item>
                      <ListGroup.Item>Outs on Play: {plotData["contactPoint"]["label"]["Outs on Play"]}</ListGroup.Item>
                   </ListGroup>
                   <p></p>
