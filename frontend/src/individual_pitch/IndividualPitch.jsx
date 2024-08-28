@@ -156,10 +156,10 @@ export default function IndividualPitch() {
             <div className="contact-heading">
                <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id="button-tooltip">About  Analysis</Tooltip>}
+                  overlay={<Tooltip id="button-tooltip">About Analysis</Tooltip>}
                >
-                  <Button variant="none" style={{borderRadius: '10px', marginBottom: '12px'}} onClick={handleShow}>
-                     <FaInfoCircle style={{width: '25px', height: '25px', marginBottom: '2px'}} />
+                  <Button variant="primary" style={{borderRadius: '10px', marginBottom: '15px', backgroundColor: '#ffffff', border: '0px'}} onClick={handleShow}>
+                     <FaInfoCircle style={{width: '25px', height: '25px', marginBottom: '2px', color: '#000000'}} />
                   </Button>
                </OverlayTrigger>
 
@@ -188,7 +188,7 @@ export default function IndividualPitch() {
                      <p><strong>True Values at Contact Point: </strong></p>
                     
                      <div className="og-values">
-                        <p>Ball Z-Position (ft): {plotData["contactPoint"]["label"]["Original Bat Position"]}</p>
+                        <p>Bat Z-Position (ft): {plotData["contactPoint"]["label"]["Original Bat Position"]}</p>
                         <p>Bat Speed (ft/s): {plotData["contactPoint"]["label"]["Original Bat Speed"]}</p>
                         <p>Bat Approach Angle (deg): {plotData["contactPoint"]["label"]["Original Bat Angle"]}</p>
                      </div>
@@ -228,7 +228,7 @@ export default function IndividualPitch() {
                   <p><strong>Change Values to Predict Launch Angle & Velocity: </strong></p>
                   <Form.Group className="predicted-measures">
                      <Form.Group className="ball-slider">
-                        <Form.Label>Change in Ball Z-Position (ft): {params.change_in_z}</Form.Label>
+                        <Form.Label>Change in Bat Z-Position (ft): {params.change_in_z}</Form.Label>
                         <Form.Range
                            className="ballRange"
                            min={-0.1}
@@ -264,7 +264,7 @@ export default function IndividualPitch() {
                      </Form.Group>
 
                      <Button variant="secondary" type="submit" onClick={handlePredictSubmit} disabled={params.change_in_bat_plane == 0 && params.change_in_z == 0 && params.change_in_bat_speed == 0}>
-                        Predict Launch Angle
+                        Predict Hit Probability
                      </Button>
 
                   </Form.Group>
