@@ -152,17 +152,6 @@ def plot_by_pitch_result_3d(filtered_pitches, pos_x, pos_y, pos_z):
     )
     fig.add_trace(scatter)
 
-    # # Add reference plane for strike zone
-    # strike_zone = go.Mesh3d(
-    #     x=[-0.7083, 0.7083, 0.7083, -0.7083],
-    #     y=[0, 0, 0, 0],
-    #     z=[1.5, 1.5, 3.5, 3.5],
-    #     opacity=0.2,
-    #     color='black',
-    #     name='Strike Zone'
-    # )
-    # fig.add_trace(strike_zone)
-
     fig.update_layout(
         title='Locations for Pitches',
         title_x=0.5,

@@ -12,6 +12,46 @@
    justify-content: space-between;
 }
 
+
+
+.accordion-flush > .accordion-item > .accordion-header .accordion-button, .accordion-flush > .accordion-item > .accordion-header .accordion-button.collapsed {
+   background: rgb(68,68,68);
+   background: linear-gradient(160deg, rgba(68,68,68,1) 0%, rgba(84,84,84,1) 39%, rgba(128,128,128,1) 69%, rgba(198,198,198,1) 100%);
+   border: 0px; 
+   padding: 10px 20px; 
+   color: #fff; 
+   font-weight: bold;
+   font-size: 18px;    /* background: rgb(32,32,32);
+   background: linear-gradient(141deg, rgba(32,32,32,1) 0%, rgba(93,93,93,1) 43%, rgba(222,220,220,1) 100%); */
+   /* color: #000; */
+   /* font-size: 18px;  */
+   /* border: 0px;  */
+}
+
+.accordion-flush > .accordion-item > .accordion-header .accordion-button, .accordion-flush > .accordion-item > .accordion-header .accordion-button.collapsed {
+   border: 0px; 
+}
+
+.accordion-button:focus {
+   box-shadow: none;
+   outline: none;
+ }
+ 
+ /* Remove the border from the accordion item */
+ .accordion-item {
+   border: none;
+   color: #000; 
+ }
+ 
+ /* Remove the border from the accordion header */
+ .accordion-header {
+   border: none;
+ }
+
+ .accordion-body {
+   border: 1px solid #d7d7d7;
+ }
+
 .actual {
    background-color: rgb(237, 237, 237);
    border: 2px solid rgb(237, 237, 237); 
@@ -31,7 +71,7 @@
    border: 5px solid rgb(237, 237, 237); 
    border-radius: 5px;
    padding: 10px;
-   width: 600px; 
+   /* width: auto;  */
 }
 
 .contact-heading {
@@ -88,3 +128,37 @@
 .og-values p{
    margin: 6px; 
 }
+
+.ai-btn {
+   --gradient-angle: 141deg;
+   background: rgb(68,68,68,);
+   background: linear-gradient(141deg, rgba(68,68,68,1) 0%, rgba(84,84,84,1) 39%, rgba(128,128,128,1) 69%, rgba(198,198,198,1) 100%);
+   border: 0px; 
+   padding: 10px 20px; 
+   color: #fff; 
+   font-weight: bold;
+   font-size: 18px; 
+   transition: --gradient-angle 0.3s ease;
+}
+
+.ai-btn:hover {
+   background: rgb(68,68,68);
+   background: linear-gradient(141deg, rgba(68,68,68,0.75) 0%, rgba(84,84,84,0.75) 39%, rgba(128,128,128,0.75) 69%, rgba(198,198,198,0.75) 100%);
+}
+
+.terminal-box {
+   background-color: #ebebeb;
+   color: #242424;
+   font-family: Menlo, 'Courier New', monospace;
+   font-size: 14px;
+   line-height: 1.5;
+   padding: 20px;
+   padding-bottom: 10px; 
+   border-radius: 2px;
+   box-shadow: 0 0 10px rgba(226, 226, 226, 0.705);
+   width: 100%;
+   /* height: auto; */
+   overflow-y: auto;
+   margin-bottom: 5px; 
+   z-index: -1;
+ }

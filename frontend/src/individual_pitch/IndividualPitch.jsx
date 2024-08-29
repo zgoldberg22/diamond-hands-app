@@ -3,13 +3,14 @@ import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './individual-pitch.css'
-import {Form, Button, ListGroup, OverlayTrigger, Tooltip, Modal, Spinner} from 'react-bootstrap';
-import {FaArrowDown, FaInfoCircle} from 'react-icons/fa'; 
+import {Form, Button, ListGroup, OverlayTrigger, Tooltip, Modal, Spinner, Accordion} from 'react-bootstrap';
+import {FaArrowDown, FaInfoCircle, FaTerminal} from 'react-icons/fa'; 
 
 import {getContactPlot} from '../api'; 
 import {getAllHits} from '../api';  
 import ContactPlot from './ContactPlot';
 import BaseballLoader from '../BaseballLoader';
+import AiAnalysis from './AiAnalysis'; 
 
 const columns = [
    { field: 'hiteventId', headerName: 'Hit Event ID', width: 'auto' },
@@ -77,11 +78,11 @@ export default function IndividualPitch() {
         setSelectedEventId(eventId);
         fetchData({"hiteventId": eventId}); 
         setParams({
-         "hiteventId": eventId, 
-         "change_in_bat_speed": 0, 
-         "change_in_z": 0, 
-         "change_in_bat_plane": 0
-      }); 
+            "hiteventId": eventId, 
+            "change_in_bat_speed": 0, 
+            "change_in_z": 0, 
+            "change_in_bat_plane": 0
+         }); 
       } else {
         setSelectedEventId(null);
       }
@@ -158,7 +159,7 @@ export default function IndividualPitch() {
                   placement="top"
                   overlay={<Tooltip id="button-tooltip">About Analysis</Tooltip>}
                >
-                  <Button variant="primary" style={{borderRadius: '10px', marginBottom: '15px', backgroundColor: '#ffffff', border: '0px'}} onClick={handleShow}>
+                  <Button variant="primary" style={{borderRadius: '10px', marginBottom: '12px', backgroundColor: '#ffffff', border: '0px'}} onClick={handleShow}>
                      <FaInfoCircle style={{width: '25px', height: '25px', marginBottom: '2px', color: '#000000'}} />
                   </Button>
                </OverlayTrigger>
@@ -169,8 +170,22 @@ export default function IndividualPitch() {
             </div> 
           } 
 
+          {selectedEventId && plotData && 
+          <Accordion flush>
+            <Accordion.Item eventKey="0">
+               <Accordion.Header>AI Generated Hit Analysis Summary & Suggestions </Accordion.Header>
+               <Accordion.Body>
+                  {<AiAnalysis data={plotData["contactPoint"]["label"]}/>}
+               </Accordion.Body>
+            </Accordion.Item>
+         </Accordion>
+          } 
+
+
          {selectedEventId && isLoading ? <BaseballLoader /> : (
             <div className="graphs">
+            {/* <d/iv className="ai-suggestion"> */}
+         {/* </div>  */}
             {plotData &&
                <div className="actual">
                   <h4 style={{paddingBottom: "10px"}} >
