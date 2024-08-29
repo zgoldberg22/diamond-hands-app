@@ -170,17 +170,16 @@ export default function IndividualPitch() {
             </div> 
           } 
 
-          {selectedEventId && plotData && 
-          <Accordion flush>
-            <Accordion.Item eventKey="0">
-               <Accordion.Header>AI Generated Hit Analysis Summary & Suggestions </Accordion.Header>
-               <Accordion.Body>
-                  {<AiAnalysis data={plotData["contactPoint"]["label"]}/>}
-               </Accordion.Body>
-            </Accordion.Item>
-         </Accordion>
+          {selectedEventId && plotData && !isLoading &&
+            <Accordion flush>
+               <Accordion.Item eventKey="0">
+                  <Accordion.Header>AI Generated Hit Analysis Summary & Suggestions </Accordion.Header>
+                  <Accordion.Body>
+                     {<AiAnalysis data={plotData["contactPoint"]["label"]}/>}
+                  </Accordion.Body>
+               </Accordion.Item>
+            </Accordion>
           } 
-
 
          {selectedEventId && isLoading ? <BaseballLoader /> : (
             <div className="graphs">
