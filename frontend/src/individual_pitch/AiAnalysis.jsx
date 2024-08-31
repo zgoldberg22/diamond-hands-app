@@ -11,58 +11,63 @@ export default function AiAnalysis({data}) {
    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
    
    const promptData = `
-    True Hit Velocity: ${data["Actual Hit Speed"]} mph
-    True Vertical Exit Angle: ${data["Actual Vertical Exit Angle"]}°
-    Horizontal Exit Angle: ${data["Horizontal Exit Angle"]}°
-    True Hit Probability: ${data[["Old Hit Probability"]]}
-    Outs on Play: ${data["Outs on Play"]}
+   Hit Velocity: ${data["Actual Hit Speed"]} mph
+   Vertical Exit Angle: ${data["Actual Vertical Exit Angle"]}°
+   Hit Probability: ${data[["Old Hit Probability"]]}
+   Outs on Play: ${data["Outs on Play"]}
   `;
 
    const generateAnalysis = async () => {
       const prompt = `
-        You are a generative AI assistant producing helpful analysis for DiamondMetrics, a contact quality analysis tool that baseball coaches use to analyze and improve their players' swings and ball contact.
-        Your task is to generate 2-3 sentences describing the contact quality given a set of metrics about the contact between the bat and ball on a given swing. 
-        The analysis paragraph should replicate the structure and tone of the examples below. Do not use the hit probability to justify your explanations.
-  
-        Here are the adjustable parameters of the swing:
-        - Z Position: The vertical position of the bat relative to the center of the ball, shifting the entire bat up or down.
-        - Bat Approach Angle: The angle of the bat's velocity vector relative to the xy-plane at the point of contact.
-        - Bat Speed: The speed of the bat at the point where contact is made.
-  
-        Z Position and Bat Approach angle are used to predict the launch angle. Optimal line drive launch angle is 17-20 degrees. Launch angles between 8 and 32 degrees are also considered strong. Do not mention these launch angles in your analyses, but use them when determining how the swing can be improved. 
-  
-        EXAMPLES:
-  
-        DATA:
-        Hit Velocity: 86.16 mph
-        Vertical Exit Angle: -25.94°
-        Horizontal Exit Angle: -71.51°
-        True Hit Probability: 0.00
-        Outs on Play: 0.00
-  
-        ANALYSIS PARAGRAPH:
-        This is very poor quality contact. With a low hit velocity of 86.16 mph and a steep negative vertical exit angle of -25.94°, the ball is likely hitting the ground quickly, possibly resulting in a weak ground ball or a foul tip. To improve contact quality, the user could try raising the Z position of the bat to align it better with the center of the ball and increasing the bat approach angle to create a more positive launch angle. These changes might help achieve more solid contact and increase the likelihood of a successful hit.
-  
-        DATA:
-        True Hit Velocity: 106.27 mph
-        True Vertical Exit Angle: 27.44°
-        Horizontal Exit Angle: 6.91°
-        True Hit Probability: 0.98
-        Outs on Play: 0.00
-  
-        ANALYSIS PARAGRAPH:
-        This is very high quality contact. With a high predicted hit velocity of 106.27 mph and a vertical exit angle of 27.44°, the ball is likely traveling far and at an optimal trajectory, leading to a high hit probability of 0.98. To maintain or improve this level of contact quality, a slight increase in bat speed could further maximize the power and distance of the hit, potentially resulting in an extra-base hit.
-  
-        YOUR TASK:
-  
-        DATA
-        ${promptData}
-  
-        ANALYSIS PARAGRAPH:
-        `;
+      You are a generative AI assistant providing helpful, concise, and actionable analysis for DiamondMetrics, a contact quality analysis tool that baseball coaches use to evaluate and improve their players' swings and ball contact. 
+      Your objective is to analyze swing data, offer insights into contact quality, and suggest adjustments to maximize hit probability.
+
+      Context:
+      DiamondMetrics uses two key metrics—Hit Velocity and Vertical Exit Angle—to compare a player's swing to similar swings from MLB StatCast data, enabling predictions about hit probability. 
+      Coaches can adjust Ball Z-Position, Bat Speed, and Bat Approach Angle to optimize swing outcomes.
+
+      Task:
+      Your task is to generate 2-3 sentences for each swing:
+      - describe the contact quality given the hit velocity, vertical exit angle, and hit probability
+      - list bullet points about how the user should change each of the adjustable parameters (bat Z position, bat speed, and bat approach angle) to improve or maintain the hit probability and contact quality. explain how this change improves the contact quality.
+      Use dashes as bullet points.
+      Use plaintext in each bullet point. Do not format the text.
+      Do not use the hit probability to justify your explanations.
+      Do not assert the result of the hit. Only postulate.
+
+      Adjustable Swing Parameters:
+      - Change in Bat Z Position (ft): Adjusts the vertical position of the bat relative to the center of the ball, moving the bat up or down. Increasing the bat Z position lowers the launch angle. Decreasing the bat Z position increases the launch angle. 
+      - Change in Bat Speed (ft/s): Modifies the speed of the bat at the moment of contact. Increasing bat speed, assuming other parameters remain unchanged, will typically result in the ball traveling further along a similar trajectory.
+      - Change in Bat Approach Angle (deg): Alters the angle of the bat's velocity vector relative to the xy-plane at contact. Increasing the bat approach angle typically increases launch angle. Decreasing lowers the launch angle.
+
+      How Parameters Affect Hit Probability:
+      - The bat Z position has the largest impact on changing hit probability. 
+      - Optimal line drive launch angles range from 17-20 degrees, with angles between 8 and 32 degrees considered strong. Use these guidelines when suggesting adjustments, but do not mention these specific angles in your analyses.
+      - Typically, a fly ball or pop up has a launch angle greater than twenty five (25) degrees.
+
+      EXAMPLE:
+
+      DATA:
+      Hit Velocity: 86.16 mph
+      Vertical Exit Angle: -25.94°
+      Hit Probability: 0.00
+      Outs on Play: 0.00
+
+      ANALYSIS PARAGRAPH:
+      This is very poor quality contact. With a low hit velocity of 86.16 mph and a steep negative vertical exit angle of -25.94°, the ball is likely hitting the ground quickly, possibly resulting in a weak ground ball or a foul tip. 
+      To improve contact quality: 
+      - Try decreasing the Z position of the bat to align it better with the center of the ball 
+      - Increasing the bat approach angle to create a more positive launch angle. 
+
+      YOUR TURN:
+      DATA:
+      ${promptData}
+      `;
   
       try {
         const result = await model.generateContent(prompt);
+
+      //   let modifiedString = result.split(":"); 
   
         setAnalysis(result.response.text);
       } catch (error) {
@@ -79,7 +84,8 @@ export default function AiAnalysis({data}) {
       <div className='ai-generate'>
          {analysis && 
             <div className="terminal-box">
-               <p>{analysis || ''}</p> 
+               <p>{analysis}</p> 
+               {/* {analysis.split(":")[1].split("-")} */}
             </div>
          }
       </div>
