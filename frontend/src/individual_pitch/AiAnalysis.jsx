@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import './individual-pitch.css'
-// const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 export default function AiAnalysis({data}) {
    const [analysis, setAnalysis] = useState('');
@@ -48,15 +47,15 @@ export default function AiAnalysis({data}) {
       EXAMPLE:
 
       DATA:
-      Hit Velocity: 86.16 mph
-      Vertical Exit Angle: -25.94°
+      Hit Velocity: 87.0 mph
+      Vertical Exit Angle: -46.93°
       Hit Probability: 0.00
       Outs on Play: 0.00
 
       ANALYSIS PARAGRAPH:
-      This is very poor quality contact. With a low hit velocity of 86.16 mph and a steep negative vertical exit angle of -25.94°, the ball is likely hitting the ground quickly, possibly resulting in a weak ground ball or a foul tip. 
+      This is very poor quality contact. With a low hit velocity of 87.0 mph and a steep negative vertical exit angle of -46.93°, the ball is likely hitting the ground quickly, possibly resulting in a weak ground ball or a foul tip. 
       To improve contact quality: 
-      - Try decreasing the Z position of the bat to align it better with the center of the ball 
+      - Try decreasing the Z position of the bat to align it better with the center of the ball to then increase the launch angle.
       - Increasing the bat approach angle to create a more positive launch angle. 
 
       YOUR TURN:
@@ -67,14 +66,17 @@ export default function AiAnalysis({data}) {
       try {
         const result = await model.generateContent(prompt);
 
-      //   let modifiedString = result.split(":"); 
-  
         setAnalysis(result.response.text);
       } catch (error) {
         console.error('Error generating analysis:', error);
         setAnalysis('Failed to generate analysis.');
       }
     };
+
+    const splitResponseText = (text) => {
+      let splitText = text.split("- ").slice(1); 
+      return splitText; 
+    }
 
     useEffect(() => {
       generateAnalysis();
@@ -84,8 +86,10 @@ export default function AiAnalysis({data}) {
       <div className='ai-generate'>
          {analysis && 
             <div className="terminal-box">
-               <p>{analysis}</p> 
-               {/* {analysis.split(":")[1].split("-")} */}
+               <p>{analysis.split("- ")[0]}</p> 
+               <ul>{splitResponseText(analysis).map((point, idx) => (
+                  <li>{point}</li>
+               ))}</ul>
             </div>
          }
       </div>
