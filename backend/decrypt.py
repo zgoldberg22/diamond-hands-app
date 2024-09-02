@@ -31,3 +31,28 @@ def decrypt_json(input_file):
    
     decrypted_data = fernet.decrypt(encoded_data)
     return json.loads(decrypted_data.decode())
+
+def encrypt_json_file(input_file, output_file, salt, password):    
+    # Generate a key from the password and salt
+    key = generate_key(password, salt)
+    fernet = Fernet(key)
+
+    with open(input_file, 'r') as file:
+        data = json.load(file)
+    
+    # Convert JSON to string and encode
+    json_string = json.dumps(data).encode()
+    
+    # Encrypt the data
+    encrypted_data = fernet.encrypt(json_string)    
+    final_data = encrypted_data
+    
+    with open(output_file, 'wb') as file:
+        file.write(final_data)
+
+    print(f"File encrypted and saved as {output_file}")
+
+# input_file = 'hit_contact.json'
+# output_file = 'hit_contact_encrypt.bin'
+
+# encrypt_json_file(input_file, output_file, salt_in_bytes, password)

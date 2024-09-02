@@ -35,14 +35,14 @@ export default function AiAnalysis({data}) {
       Do not assert the result of the hit. Only postulate.
 
       Adjustable Swing Parameters:
-      - Change in Bat Z Position (ft): Adjusts the vertical position of the bat relative to the center of the ball, moving the bat up or down. Increasing the bat Z position lowers the launch angle. Decreasing the bat Z position increases the launch angle. 
+      - Change in Bat Z Position (ft): Adjusts the vertical position of the bat relative to the center of the ball, moving the bat up or down. The bat Z position and launch angle have an INVERSE relationship.
       - Change in Bat Speed (ft/s): Modifies the speed of the bat at the moment of contact. Increasing bat speed, assuming other parameters remain unchanged, will typically result in the ball traveling further along a similar trajectory.
       - Change in Bat Approach Angle (deg): Alters the angle of the bat's velocity vector relative to the xy-plane at contact. Increasing the bat approach angle typically increases launch angle. Decreasing lowers the launch angle.
 
       How Parameters Affect Hit Probability:
-      - The bat Z position has the largest impact on changing hit probability. 
+      - The bat Z position has the largest impact on changing hit probability. Increasing the bat Z position, decreases the launch angle. Decreasing the bat Z position, increases the launch angle. 
       - Optimal line drive launch angles range from 17-20 degrees, with angles between 8 and 32 degrees considered strong. Use these guidelines when suggesting adjustments, but do not mention these specific angles in your analyses.
-      - Typically, a fly ball or pop up has a launch angle greater than twenty five (25) degrees.
+      - Typically, a fly ball or pop up has a launch angle greater than twenty five (25) degrees, but do not mention these specific words in your analyses.  
 
       EXAMPLE:
 
@@ -55,7 +55,7 @@ export default function AiAnalysis({data}) {
       ANALYSIS PARAGRAPH:
       This is very poor quality contact. With a low hit velocity of 87.0 mph and a steep negative vertical exit angle of -46.93°, the ball is likely hitting the ground quickly, possibly resulting in a weak ground ball or a foul tip. 
       To improve contact quality: 
-      - Try decreasing the Z position of the bat to align it better with the center of the ball to then increase the launch angle.
+      - Try decreasing the Z position of the bat to align it better with the center of the ball which increases the launch angle.
       - Increasing the bat approach angle to create a more positive launch angle. 
 
       YOUR TURN:

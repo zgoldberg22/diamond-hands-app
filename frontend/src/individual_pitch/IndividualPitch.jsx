@@ -63,6 +63,7 @@ export default function IndividualPitch() {
          setIsLoading(true); 
          try {
             const resData = await getContactPlot(args); 
+            console.log(resData)
             setPlotData(resData); 
             setPredictedData(resData); 
          } catch (error) {
@@ -196,6 +197,7 @@ export default function IndividualPitch() {
                         <ListGroup.Item>True Vertical Exit Angle: {plotData["contactPoint"]["label"]["Actual Vertical Exit Angle"]}</ListGroup.Item>
                         <ListGroup.Item>Horizontal Exit Angle: {plotData["contactPoint"]["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
                         <ListGroup.Item>Hit Probability: {plotData["contactPoint"]["label"]["Old Hit Probability"]}</ListGroup.Item>
+                        <ListGroup.Item>PI Value: {plotData["contactPoint"]["label"]["PI Value"]}</ListGroup.Item>
                         <ListGroup.Item>Outs on Play: {plotData["contactPoint"]["label"]["Outs on Play"]}</ListGroup.Item>
                      </ListGroup>
                      <p></p>
@@ -235,6 +237,7 @@ export default function IndividualPitch() {
                      <ListGroup.Item>Predicted Vertical Exit Angle: {predictedData["contactPoint"]["label"]["Predicted Vertical Exit Angle"]}</ListGroup.Item>
                      <ListGroup.Item>Horizontal Exit Angle: {predictedData["contactPoint"]["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
                      <ListGroup.Item>Predicted Hit Probability: {predictedData["contactPoint"]["label"]["New Hit Probability"]}</ListGroup.Item>
+                     <ListGroup.Item>Predicted PI Value: {predictedData["contactPoint"]["label"]["PI Value"]}</ListGroup.Item>
                      <ListGroup.Item>Outs on Play: {plotData["contactPoint"]["label"]["Outs on Play"]}</ListGroup.Item>
                   </ListGroup>
                   <p></p>
@@ -332,6 +335,11 @@ export default function IndividualPitch() {
                   <li><em>Bat Speed</em>: The speed of the bat at the point where contact is made.</li>
                   <li><em>Z Position</em>: The vertical position of the bat, relative to the ball at contact.</li>
                </ul>
+            </ul>
+
+            <p><strong>In Both Sections:</strong></p>
+            <ul>
+               <li><em>"Piece of It" (PI) Value</em>: The quality of the contact position on the ball relative to the bat plane.</li>
             </ul>
 
             <p>Once the parameters are adjusted, the tool recalculates the relevant features and passes them into our models to generate new predictions for exit velocity and launch angle. These predictions are then used to determine the corresponding <em>hit probability</em> using Statcast data. The change in hit probability from the original swing (left) to the modified swing (right) illustrates the impact of the adjustments on contact quality.</p>

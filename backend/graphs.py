@@ -25,6 +25,7 @@ la_scaler_y = unpickle(os.path.join(os.path.dirname(__file__), 'la_scaler_y.pkl'
 ev_model = unpickle(os.path.join(os.path.dirname(__file__), 'ev_model.pkl'))
 ev_scaler_X = unpickle(os.path.join(os.path.dirname(__file__), 'ev_scaler_X.pkl'))
 ev_scaler_y = unpickle(os.path.join(os.path.dirname(__file__), 'ev_scaler_y.pkl'))
+ev_rfe = unpickle(os.path.join(os.path.dirname(__file__), 'ev_rfe.pkl'))
 
 def get_hit_contact():
     return get_decrypted_data("hit_contact_encrypt.bin")
@@ -51,13 +52,13 @@ def first_occurence_closest_to_zero(group):
 
 
 def single_pitch_plots(hiteventId, change_in_z=None, change_in_bat_speed=None, change_in_bat_plane=None): 
-    fig_dict_contact = plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+    fig_dict_contact = plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, ev_rfe, change_in_z, change_in_bat_plane, change_in_bat_speed)
+    
+    fig_dict_speed_vs_angle = plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, ev_rfe, change_in_z, change_in_bat_plane, change_in_bat_speed)
 
-    fig_dict_speed_vs_angle = plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hits_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+    fig_dict_launch_speed_dist = plot_launch_speed_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, ev_rfe, change_in_z, change_in_bat_plane, change_in_bat_speed)
 
-    fig_dict_launch_speed_dist = plot_launch_speed_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
-
-    fig_dict_launch_angle = plot_launch_angle_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z, change_in_bat_speed)
+    fig_dict_launch_angle = plot_launch_angle_distribution(hiteventId, sc_hits_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, ev_rfe, change_in_z, change_in_bat_plane, change_in_bat_speed)
 
     return {
         "contactPoint": fig_dict_contact,
