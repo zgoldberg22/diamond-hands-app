@@ -3,13 +3,14 @@ import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './individual-pitch.css'
-import {Form, Button, ListGroup, OverlayTrigger, Tooltip, Modal, Spinner} from 'react-bootstrap';
-import {FaArrowDown, FaInfoCircle} from 'react-icons/fa'; 
+import {Form, Button, ListGroup, OverlayTrigger, Tooltip, Modal, Spinner, Accordion} from 'react-bootstrap';
+import {FaArrowDown, FaInfoCircle, FaTerminal} from 'react-icons/fa'; 
 
 import {getContactPlot} from '../api'; 
 import {getAllHits} from '../api';  
 import ContactPlot from './ContactPlot';
 import BaseballLoader from '../BaseballLoader';
+import AiAnalysis from './AiAnalysis'; 
 
 const columns = [
    { field: 'hiteventId', headerName: 'Hit Event ID', width: 'auto' },
@@ -77,11 +78,11 @@ export default function IndividualPitch() {
         setSelectedEventId(eventId);
         fetchData({"hiteventId": eventId}); 
         setParams({
-         "hiteventId": eventId, 
-         "change_in_bat_speed": 0, 
-         "change_in_z": 0, 
-         "change_in_bat_plane": 0
-      }); 
+            "hiteventId": eventId, 
+            "change_in_bat_speed": 0, 
+            "change_in_z": 0, 
+            "change_in_bat_plane": 0
+         }); 
       } else {
         setSelectedEventId(null);
       }
@@ -156,10 +157,10 @@ export default function IndividualPitch() {
             <div className="contact-heading">
                <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id="button-tooltip">About  Analysis</Tooltip>}
+                  overlay={<Tooltip id="button-tooltip">About Analysis</Tooltip>}
                >
-                  <Button variant="none" style={{borderRadius: '10px', marginBottom: '12px'}} onClick={handleShow}>
-                     <FaInfoCircle style={{width: '25px', height: '25px', marginBottom: '2px'}} />
+                  <Button variant="primary" style={{borderRadius: '10px', marginBottom: '12px', backgroundColor: '#ffffff', border: '0px'}} onClick={handleShow}>
+                     <FaInfoCircle style={{width: '25px', height: '25px', marginBottom: '2px', color: '#000000'}} />
                   </Button>
                </OverlayTrigger>
 
@@ -169,8 +170,21 @@ export default function IndividualPitch() {
             </div> 
           } 
 
+          {selectedEventId && plotData && !isLoading &&
+            <Accordion flush>
+               <Accordion.Item eventKey="0">
+                  <Accordion.Header>(Beta) AI Generated Hit Analysis Summary & Suggestions </Accordion.Header>
+                  <Accordion.Body>
+                     {<AiAnalysis data={plotData["contactPoint"]["label"]}/>}
+                  </Accordion.Body>
+               </Accordion.Item>
+            </Accordion>
+          } 
+
          {selectedEventId && isLoading ? <BaseballLoader /> : (
             <div className="graphs">
+            {/* <d/iv className="ai-suggestion"> */}
+         {/* </div>  */}
             {plotData &&
                <div className="actual">
                   <h4 style={{paddingBottom: "10px"}} >
@@ -182,13 +196,14 @@ export default function IndividualPitch() {
                         <ListGroup.Item>True Vertical Exit Angle: {plotData["contactPoint"]["label"]["Actual Vertical Exit Angle"]}</ListGroup.Item>
                         <ListGroup.Item>Horizontal Exit Angle: {plotData["contactPoint"]["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
                         <ListGroup.Item>Hit Probability: {plotData["contactPoint"]["label"]["Old Hit Probability"]}</ListGroup.Item>
+                        <ListGroup.Item>PI Value: {plotData["contactPoint"]["label"]["PI Value"]}</ListGroup.Item>
                         <ListGroup.Item>Outs on Play: {plotData["contactPoint"]["label"]["Outs on Play"]}</ListGroup.Item>
                      </ListGroup>
                      <p></p>
                      <p><strong>True Values at Contact Point: </strong></p>
                     
                      <div className="og-values">
-                        <p>Ball Z-Position (ft): {plotData["contactPoint"]["label"]["Original Bat Position"]}</p>
+                        <p>Bat Z-Position (ft): {plotData["contactPoint"]["label"]["Original Bat Position"]}</p>
                         <p>Bat Speed (ft/s): {plotData["contactPoint"]["label"]["Original Bat Speed"]}</p>
                         <p>Bat Approach Angle (deg): {plotData["contactPoint"]["label"]["Original Bat Angle"]}</p>
                      </div>
@@ -221,6 +236,7 @@ export default function IndividualPitch() {
                      <ListGroup.Item>Predicted Vertical Exit Angle: {predictedData["contactPoint"]["label"]["Predicted Vertical Exit Angle"]}</ListGroup.Item>
                      <ListGroup.Item>Horizontal Exit Angle: {predictedData["contactPoint"]["label"]["Horizontal Exit Angle"]}</ListGroup.Item>
                      <ListGroup.Item>Predicted Hit Probability: {predictedData["contactPoint"]["label"]["New Hit Probability"]}</ListGroup.Item>
+                     <ListGroup.Item>Predicted PI Value: {predictedData["contactPoint"]["label"]["PI Value"]}</ListGroup.Item>
                      <ListGroup.Item>Outs on Play: {plotData["contactPoint"]["label"]["Outs on Play"]}</ListGroup.Item>
                   </ListGroup>
                   <p></p>
@@ -228,7 +244,7 @@ export default function IndividualPitch() {
                   <p><strong>Change Values to Predict Launch Angle & Velocity: </strong></p>
                   <Form.Group className="predicted-measures">
                      <Form.Group className="ball-slider">
-                        <Form.Label>Change in Ball Z-Position (ft): {params.change_in_z}</Form.Label>
+                        <Form.Label>Change in Bat Z-Position (ft): {params.change_in_z}</Form.Label>
                         <Form.Range
                            className="ballRange"
                            min={-0.1}
@@ -264,7 +280,7 @@ export default function IndividualPitch() {
                      </Form.Group>
 
                      <Button variant="secondary" type="submit" onClick={handlePredictSubmit} disabled={params.change_in_bat_plane == 0 && params.change_in_z == 0 && params.change_in_bat_speed == 0}>
-                        Predict Launch Angle
+                        Predict Hit Probability
                      </Button>
 
                   </Form.Group>
@@ -318,6 +334,11 @@ export default function IndividualPitch() {
                   <li><em>Bat Speed</em>: The speed of the bat at the point where contact is made.</li>
                   <li><em>Z Position</em>: The vertical position of the bat, relative to the ball at contact.</li>
                </ul>
+            </ul>
+
+            <p><strong>In Both Sections:</strong></p>
+            <ul>
+               <li><em>"Piece of It" (PI) Value</em>: The quality of the contact position on the ball relative to the bat plane.</li>
             </ul>
 
             <p>Once the parameters are adjusted, the tool recalculates the relevant features and passes them into our models to generate new predictions for exit velocity and launch angle. These predictions are then used to determine the corresponding <em>hit probability</em> using Statcast data. The change in hit probability from the original swing (left) to the modified swing (right) illustrates the impact of the adjustments on contact quality.</p>

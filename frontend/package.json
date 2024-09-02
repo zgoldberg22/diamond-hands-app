@@ -15,6 +15,7 @@
     "@ag-grid-enterprise/column-tool-panel": "^31.3.2",
     "@ag-grid-enterprise/menu": "^31.3.2",
     "@ag-grid-enterprise/set-filter": "^31.3.2",
+    "@google/generative-ai": "^0.17.1",
     "ag-grid-react": "^32.0.2",
     "bootstrap": "^5.3.3",
     "kernel-smooth": "^0.2.3",

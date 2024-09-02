@@ -52,7 +52,7 @@ const FilterSystem = ({ setAppFilters }) => {
   const resetFilters = () => {
     setFilters({
       gameid: "",
-      result: "HitIntoPlay", //Strike, Ball or HitIntoPlay
+      result: "Ball", //Strike, Ball or HitIntoPlay
       action: "", // Foul, FoulTip, Called
       swing: null, //hitEventId != null
       outsplay: "", 

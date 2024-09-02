@@ -8,17 +8,13 @@ import os
 import json
 from plotly.subplots import make_subplots
 from scipy.stats import gaussian_kde
+from sklearn.preprocessing import PolynomialFeatures
 
-def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z=None, change_in_bat_plane=None, change_in_bat_speed=None, bat_radius=0.219816 / 2, ball_radius=0.242782 / 2):
+def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, ev_rfe=None, change_in_z=None, change_in_bat_plane=None, change_in_bat_speed=None, bat_radius=0.219816 / 2, ball_radius=0.242782 / 2):
     # Calculate new params for the model based on adjusted (or not adjusted) params
     la_cols = ['differential_z', 'bat_vel_at_contact_z']
     ev_cols = [
-        'ball_pos_at_contact_x', 'ball_pos_at_contact_y', 'ball_pos_at_contact_z',
-        'bat_pos_at_contact_x', 'bat_pos_at_contact_y', 'bat_pos_at_contact_z',
-        'differential_x', 'differential_y', 'differential_z',
-        'bat_vel_at_contact_x', 'bat_vel_at_contact_y', 'bat_vel_at_contact_z',
-        'distance_from_handle', 'bat_speed_at_contact', 
-        'angle_from_z'
+        'pi_value', 'bat_speed_at_contact', 'pitchspeed_mph', 'differential_z'
     ]
 
     fig = go.Figure()
@@ -52,8 +48,13 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
         new_bat['bat_handle_at_contact_y'].iloc[0] += change_in_z
         new_bat['bat_handle_at_contact_z'].iloc[0] += change_in_z
 
+    new_bat['effective_diff'].iloc[0] = np.sqrt(new_bat['differential_y'].iloc[0]**2+new_bat['differential_z'].iloc[0]**2)*np.cos(np.radians(90) - np.radians(bat_plane) - np.arctan(new_bat['differential_z'].iloc[0]/np.abs(new_bat['differential_y'].iloc[0])))
+
+    # 'Piece of It' value
+    new_bat['pi_value'].iloc[0] = 1-np.abs(new_bat['effective_diff'].iloc[0] / ball_radius)
+
     if change_in_bat_speed is not None:
-        new_bat['bat_speed_at_contact'].iloc[0] = new_bat['bat_speed_at_contact'].iloc[0] + change_in_bat_speed
+        new_bat['bat_speed_at_contact'].iloc[0] = new_bat['bat_speed_at_contact'].iloc[0] - change_in_bat_speed
         
     new_bat['bat_vel_at_contact_z'].iloc[0] = new_bat['bat_speed_at_contact'].iloc[0] * math.sin(math.radians(bat_plane))
     new_bat['bat_vel_at_contact_y'].iloc[0] = new_bat['bat_speed_at_contact'].iloc[0] * math.cos(math.radians(bat_plane))
@@ -61,9 +62,19 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
     if ev_model is None:
         pred_vel = new_bat['hitspeed_mph'].iloc[0]
     else:
-        X_new = new_bat[ev_cols]
-        X_new_scaled = ev_scaler_X.transform(X_new)
-        y_new_scaled = ev_model.predict(X_new_scaled)
+        if ev_rfe is None:
+            X_new = new_bat[ev_cols]
+            X_new_scaled = ev_scaler_X.transform(X_new)
+            y_new_scaled = ev_model.predict(X_new_selected)
+        else:
+            X_new = new_bat[ev_cols]
+            poly = PolynomialFeatures(degree=2, include_bias=False)
+            X_poly = poly.fit_transform(X_new)
+            
+            X_new_scaled = ev_scaler_X.transform(X_poly)
+            X_new_selected = X_new_scaled[:, ev_rfe.support_]
+            y_new_scaled = ev_model.predict(X_new_selected)
+            
         pred_vel = ev_scaler_y.inverse_transform(y_new_scaled.reshape(-1, 1)).flatten()[0]
     
     if la_model is not None:
@@ -250,21 +261,19 @@ def plot_contact_pred(hiteventId, bat_tracking, hit_contact, sc_hit_preds, la_mo
             "New Hit Probability": f"{hit_prob_pred:.2f}", 
             "Original Bat Position": f"{og_bat_z:.2f}", 
             "Original Bat Speed": f"{og_bat_speed:.2f}", 
-            "Original Bat Angle": f"{bat_plane:.2f}"
+            "Original Bat Angle": f"{bat_plane:.2f}", 
+            "PI Value": f"{new_bat['pi_value'].iloc[0]:.2f}"
         }
     }
 
     return fig_dict
 
 
-def plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hit_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z=None, change_in_bat_plane=None, change_in_bat_speed=None):
+def plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hit_preds, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, ev_rfe=None, change_in_z=None, change_in_bat_plane=None, change_in_bat_speed=None):  
+    ball_radius = 0.242782 / 2 
     la_cols = ['differential_z', 'bat_vel_at_contact_z']
     ev_cols = [
-        'ball_pos_at_contact_x', 'ball_pos_at_contact_y', 'ball_pos_at_contact_z',
-        'bat_pos_at_contact_x', 'bat_pos_at_contact_y', 'bat_pos_at_contact_z',
-        'differential_x', 'differential_y', 'differential_z',
-        'bat_vel_at_contact_x', 'bat_vel_at_contact_y', 'bat_vel_at_contact_z',
-        'distance_from_handle', 'bat_speed_at_contact', 'angle_from_z'
+        'pi_value', 'bat_speed_at_contact', 'pitchspeed_mph', 'differential_z'
     ]
 
     row = hit_contact[hit_contact['hiteventId'] == hiteventId]
@@ -295,6 +304,10 @@ def plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hit_preds, la_model, 
         row['bat_handle_at_contact_y'] += change_in_z
         row['bat_handle_at_contact_z'] += change_in_z
 
+    row['effective_diff'] = np.sqrt(row['differential_y']**2+row['differential_z']**2)*np.cos(np.radians(90) - np.radians(bat_plane) - np.arctan(row['differential_z']/np.abs(row['differential_y'])))
+    # 'Piece of It' value
+    row['pi_value'] = 1-np.abs(row['effective_diff'] / ball_radius)
+
     if change_in_bat_speed is not None:
         row['bat_speed_at_contact'] = row['bat_speed_at_contact'] + change_in_bat_speed
     row['bat_vel_at_contact_z'] = row['bat_speed_at_contact'] * math.sin(math.radians(bat_plane))
@@ -303,9 +316,18 @@ def plot_launch_speed_vs_angle(hiteventId, hit_contact, sc_hit_preds, la_model, 
     if ev_model is None:
         pred_vel = row['hitspeed_mph']
     else:
-        X_new = row[ev_cols].values.reshape(1, -1)
-        X_new_scaled = ev_scaler_X.transform(X_new)
-        y_new_scaled = ev_model.predict(X_new_scaled)
+        if ev_rfe is None:
+            X_new = row[ev_cols].values.reshape(1, -1)
+            X_new_scaled = ev_scaler_X.transform(X_new)
+            y_new_scaled = ev_model.predict(X_new_selected)
+        else:
+            X_new = row[ev_cols].values.reshape(1, -1)
+            poly = PolynomialFeatures(degree=2, include_bias=False)
+            X_poly = poly.fit_transform(X_new)
+
+            X_new_scaled = ev_scaler_X.transform(X_poly)
+            X_new_selected = X_new_scaled[:, ev_rfe.support_]
+            y_new_scaled = ev_model.predict(X_new_selected)
         pred_vel = ev_scaler_y.inverse_transform(y_new_scaled.reshape(-1, 1)).flatten()[0]
 
     if la_model is not None:
@@ -458,14 +480,11 @@ def plot_distribution(data, value, color, title, xaxis_title, yaxis_title, true_
     }
 
 
-def plot_launch_speed_distribution(hiteventId, sc_hit_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z=None, change_in_bat_plane=None, change_in_bat_speed=None):
+def plot_launch_speed_distribution(hiteventId, sc_hit_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, ev_rfe=None, change_in_z=None, change_in_bat_plane=None, change_in_bat_speed=None):    
+    ball_radius = 0.242782 / 2 
     la_cols = ['differential_z', 'bat_vel_at_contact_z']
     ev_cols = [
-        'ball_pos_at_contact_x', 'ball_pos_at_contact_y', 'ball_pos_at_contact_z',
-        'bat_pos_at_contact_x', 'bat_pos_at_contact_y', 'bat_pos_at_contact_z',
-        'differential_x', 'differential_y', 'differential_z',
-        'bat_vel_at_contact_x', 'bat_vel_at_contact_y', 'bat_vel_at_contact_z',
-        'distance_from_handle', 'bat_speed_at_contact', 'angle_from_z'
+        'pi_value', 'bat_speed_at_contact', 'pitchspeed_mph', 'differential_z'
     ]
 
     row = hit_contact[hit_contact['hiteventId'] == hiteventId]
@@ -496,17 +515,29 @@ def plot_launch_speed_distribution(hiteventId, sc_hit_preds, hit_contact, la_mod
         row['bat_handle_at_contact_y'] += change_in_z
         row['bat_handle_at_contact_z'] += change_in_z
 
+    row['effective_diff'] = np.sqrt(row['differential_y']**2+row['differential_z']**2)*np.cos(np.radians(90) - np.radians(bat_plane) - np.arctan(row['differential_z']/np.abs(row['differential_y'])))
+    # 'Piece of It' value
+    row['pi_value'] = 1-np.abs(row['effective_diff'] / ball_radius)
+
     if change_in_bat_speed is not None:
         row['bat_vel_at_contact_z'] = row['bat_speed_at_contact'] * math.sin(math.radians(bat_plane))
     row['bat_vel_at_contact_y'] = row['bat_speed_at_contact'] * math.cos(math.radians(bat_plane))
 
-    
     if ev_model is None:
         pred_vel = row['hitspeed_mph']
     else:
-        X_new = row[ev_cols].values.reshape(1, -1)
-        X_new_scaled = ev_scaler_X.transform(X_new)
-        y_new_scaled = ev_model.predict(X_new_scaled)
+        if ev_rfe is None:
+            X_new = row[ev_cols].values.reshape(1, -1)
+            X_new_scaled = ev_scaler_X.transform(X_new)
+            y_new_scaled = ev_model.predict(X_new_selected)
+        else:
+            X_new = row[ev_cols].values.reshape(1, -1)
+            poly = PolynomialFeatures(degree=2, include_bias=False)
+            X_poly = poly.fit_transform(X_new)
+            
+            X_new_scaled = ev_scaler_X.transform(X_poly)
+            X_new_selected = X_new_scaled[:, ev_rfe.support_]
+            y_new_scaled = ev_model.predict(X_new_selected)
         pred_vel = ev_scaler_y.inverse_transform(y_new_scaled.reshape(-1, 1)).flatten()[0]
 
     if la_model is not None:
@@ -538,14 +569,11 @@ def plot_launch_speed_distribution(hiteventId, sc_hit_preds, hit_contact, la_mod
     return fig_dict
 
 
-def plot_launch_angle_distribution(hiteventId, sc_hit_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, change_in_z=None, change_in_bat_plane=None, change_in_bat_speed=None):
+def plot_launch_angle_distribution(hiteventId, sc_hit_preds, hit_contact, la_model, la_scaler_X, la_scaler_y, ev_model, ev_scaler_X, ev_scaler_y, ev_rfe=None, change_in_z=None, change_in_bat_plane=None, change_in_bat_speed=None):    
+    ball_radius = 0.242782 / 2
     la_cols = ['differential_z', 'bat_vel_at_contact_z']
     ev_cols = [
-        'ball_pos_at_contact_x', 'ball_pos_at_contact_y', 'ball_pos_at_contact_z',
-        'bat_pos_at_contact_x', 'bat_pos_at_contact_y', 'bat_pos_at_contact_z',
-        'differential_x', 'differential_y', 'differential_z',
-        'bat_vel_at_contact_x', 'bat_vel_at_contact_y', 'bat_vel_at_contact_z',
-        'distance_from_handle', 'bat_speed_at_contact', 'angle_from_z'
+        'pi_value', 'bat_speed_at_contact', 'pitchspeed_mph', 'differential_z'
     ]
 
     row = hit_contact[hit_contact['hiteventId'] == hiteventId]
@@ -576,6 +604,10 @@ def plot_launch_angle_distribution(hiteventId, sc_hit_preds, hit_contact, la_mod
         row['bat_handle_at_contact_y'] += change_in_z
         row['bat_handle_at_contact_z'] += change_in_z
 
+    row['effective_diff'] = np.sqrt(row['differential_y']**2+row['differential_z']**2)*np.cos(np.radians(90) - np.radians(bat_plane) - np.arctan(row['differential_z']/np.abs(row['differential_y'])))
+    # 'Piece of It' value
+    row['pi_value'] = 1-np.abs(row['effective_diff'] / ball_radius)
+
     if change_in_bat_speed is not None:
         row['bat_speed_at_contact'] = row['bat_speed_at_contact'] + change_in_bat_speed
 
@@ -585,9 +617,18 @@ def plot_launch_angle_distribution(hiteventId, sc_hit_preds, hit_contact, la_mod
     if ev_model is None:
         pred_vel = row['hitspeed_mph']
     else:
-        X_new = row[ev_cols].values.reshape(1, -1)
-        X_new_scaled = ev_scaler_X.transform(X_new)
-        y_new_scaled = ev_model.predict(X_new_scaled)
+        if ev_rfe is None:
+            X_new = row[ev_cols].values.reshape(1, -1)
+            X_new_scaled = ev_scaler_X.transform(X_new)
+            y_new_scaled = ev_model.predict(X_new_selected)
+        else:
+            X_new = row[ev_cols].values.reshape(1, -1)
+            poly = PolynomialFeatures(degree=2, include_bias=False)
+            X_poly = poly.fit_transform(X_new)
+            
+            X_new_scaled = ev_scaler_X.transform(X_poly)
+            X_new_selected = X_new_scaled[:, ev_rfe.support_]
+            y_new_scaled = ev_model.predict(X_new_selected)
         pred_vel = ev_scaler_y.inverse_transform(y_new_scaled.reshape(-1, 1)).flatten()[0]
 
     if la_model is not None:
