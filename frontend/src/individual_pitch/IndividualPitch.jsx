@@ -63,7 +63,6 @@ export default function IndividualPitch() {
          setIsLoading(true); 
          try {
             const resData = await getContactPlot(args); 
-            console.log(resData)
             setPlotData(resData); 
             setPredictedData(resData); 
          } catch (error) {
@@ -174,7 +173,7 @@ export default function IndividualPitch() {
           {selectedEventId && plotData && !isLoading &&
             <Accordion flush>
                <Accordion.Item eventKey="0">
-                  <Accordion.Header>AI Generated Hit Analysis Summary & Suggestions </Accordion.Header>
+                  <Accordion.Header>(Beta) AI Generated Hit Analysis Summary & Suggestions </Accordion.Header>
                   <Accordion.Body>
                      {<AiAnalysis data={plotData["contactPoint"]["label"]}/>}
                   </Accordion.Body>

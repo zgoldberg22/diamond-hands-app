@@ -4,7 +4,7 @@ import './individual-pitch.css'
 
 export default function AiAnalysis({data}) {
    const [analysis, setAnalysis] = useState('');
-   const GOOGLE_API_KEY = "AIzaSyAP0CRZEPeFMnM6FxqjzTjhEVVQix5SXK8"
+   const GOOGLE_API_KEY = "AIzaSyCm7ae8Dr5Exl2ct4dLuAX_J9RjjUfcjrI"
    
    const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -25,34 +25,24 @@ export default function AiAnalysis({data}) {
       DiamondMetrics uses two key metrics—Hit Velocity and Vertical Exit Angle—to compare a player's swing to similar swings from MLB StatCast data, enabling predictions about hit probability. 
       Coaches can adjust Ball Z-Position, Bat Speed, and Bat Approach Angle to optimize swing outcomes.
 
-      Task:
       Your task is to generate 2-3 sentences for each swing:
       - describe the contact quality given the hit velocity, vertical exit angle, and hit probability
-      - list bullet points about how the user should change each of the adjustable parameters (bat Z position, bat speed, and bat approach angle) to improve or maintain the hit probability and contact quality. explain how this change improves the contact quality.
+      - list bullet points about how the user should change each of the adjustable parameters (bat Z position, bat speed, and bat approach angle) to improve or maintain the hit probability and contact quality. Explain how this change improves the contact quality.
+      
+      Steps to complete task:
+      1. In one sentence, describe the contact quality given the hit velocity and vertical exit angle
+      2. Identify if the vertical launch angle is within the optimal range of 8 and 32 degrees
+        a. If the vertical launch angle is less than 8 degrees, suggest the user to decrease bat z position and/or increase bat approach angle.
+        b. If the vertical launch angle is greater than 32 degrees, suggest the user to increase bat z position and/or decrease  bat approach angle.
+        c. If the vertical launch angle is between 8 and 32 degrees, suggest the user to increase the bat speed.
+      
       Use dashes as bullet points.
       Use plaintext in each bullet point. Do not format the text.
       Do not use the hit probability to justify your explanations.
       Do not assert the result of the hit. Only postulate.
+      Emulate the tone and format of the example below. 
 
-      Adjustable Swing Parameters:
-      - Change in Bat Z Position (ft): Adjusts the vertical position of the bat relative to the center of the ball, moving the bat up or down. The bat Z position and launch angle have an INVERSE relationship.
-      - Change in Bat Speed (ft/s): Modifies the speed of the bat at the moment of contact. Increasing bat speed, assuming other parameters remain unchanged, will typically result in the ball traveling further along a similar trajectory.
-      - Change in Bat Approach Angle (deg): Alters the angle of the bat's velocity vector relative to the xy-plane at contact. Increasing the bat approach angle typically increases launch angle. Decreasing lowers the launch angle.
-
-      How Parameters Affect Hit Probability:
-      - The bat Z position has the largest impact on changing hit probability. Increasing the bat Z position, decreases the launch angle. Decreasing the bat Z position, increases the launch angle. 
-      - Optimal line drive launch angles range from 17-20 degrees, with angles between 8 and 32 degrees considered strong. Use these guidelines when suggesting adjustments, but do not mention these specific angles in your analyses.
-      - Typically, a fly ball or pop up has a launch angle greater than twenty five (25) degrees, but do not mention these specific words in your analyses.  
-
-      EXAMPLE:
-
-      DATA:
-      Hit Velocity: 87.0 mph
-      Vertical Exit Angle: -46.93°
-      Hit Probability: 0.00
-      Outs on Play: 0.00
-
-      ANALYSIS PARAGRAPH:
+      EXAMPLE ANALYSIS PARAGRAPH:
       This is very poor quality contact. With a low hit velocity of 87.0 mph and a steep negative vertical exit angle of -46.93°, the ball is likely hitting the ground quickly, possibly resulting in a weak ground ball or a foul tip. 
       To improve contact quality: 
       - Try decreasing the Z position of the bat to align it better with the center of the ball which increases the launch angle.
@@ -61,11 +51,11 @@ export default function AiAnalysis({data}) {
       YOUR TURN:
       DATA:
       ${promptData}
-      `;
+      
+      ANALYSIS PARAGRAPH:`;
   
       try {
         const result = await model.generateContent(prompt);
-
         setAnalysis(result.response.text);
       } catch (error) {
         console.error('Error generating analysis:', error);
